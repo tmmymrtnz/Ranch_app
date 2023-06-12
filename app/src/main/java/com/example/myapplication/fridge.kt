@@ -23,10 +23,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,13 +33,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 @Composable
-fun fridgeScreen() {
-    var selectedFridgeMode by remember { mutableStateOf("Default") }
-    var Fridgetemperature by remember { mutableStateOf(5) }
-    var Freezertemperature by remember { mutableStateOf(-15) }
+fun fridgeScreen(fridgeViewModel: FridgeViewModel = viewModel()) {
+
+    val fridgeUi by fridgeViewModel.uiState.collectAsState()
 
     Box(
         modifier = Modifier
@@ -79,9 +77,9 @@ fun fridgeScreen() {
 
             ModeSelector(
                 title = "Fridge Mode",
-                selectedMode = selectedFridgeMode,
+                selectedMode = fridgeUi.selectedFridgeMode,
                 modes = modes,
-                onModeSelected = { mode -> selectedFridgeMode = mode }
+                onModeSelected = { mode -> fridgeViewModel.changeMode(mode)}
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -90,9 +88,9 @@ fun fridgeScreen() {
                 title =  "Set temperature",
                 minValue = 2,
                 maxValue = 8,
-                currentTemperature = Fridgetemperature,
+                currentTemperature = fridgeUi.fridgeTemp,
                 onTemperatureChange = { value ->
-                    Fridgetemperature = value
+                   fridgeViewModel.setFridgeTemp(value)
                 }
             )
 
@@ -102,9 +100,9 @@ fun fridgeScreen() {
                 title =  "Set Freezer temperature",
                 minValue = -20,
                 maxValue = -8,
-                currentTemperature = Freezertemperature,
+                currentTemperature = fridgeUi.freezerTemp,
                 onTemperatureChange = { value ->
-                    Freezertemperature = value
+                    fridgeViewModel.setFreezerTemp(value)
                 }
             )
 
@@ -200,7 +198,7 @@ fun TemperatureSlider(
 ) {
     Box(
         modifier = Modifier
-        .background(color = MaterialTheme.colorScheme.tertiary, RoundedCornerShape(20.dp))
+            .background(color = MaterialTheme.colorScheme.tertiary, RoundedCornerShape(20.dp))
             .padding(10.dp)
     ) {
         Column {

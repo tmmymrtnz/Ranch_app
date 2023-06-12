@@ -17,6 +17,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,16 +29,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 @Composable
-fun ovenScreen() {
-    var selectedGrillMode by remember { mutableStateOf("Off") }
-    var selectedConvMode by remember { mutableStateOf("Off") }
-    var selectedHeatMode by remember { mutableStateOf("Top") }
-    var Oventemperature by remember { mutableStateOf(180) }
-    var OvenOn by remember { mutableStateOf(false) }
+fun ovenScreen(ovenViewModel: OvenViewModel = viewModel()) {
 
+
+    val ovenUi by ovenViewModel.uiState.collectAsState()
 
     Box(
         modifier = Modifier
@@ -70,9 +69,9 @@ fun ovenScreen() {
             Divider(color = Color.White)
 
             SwitchWithLabels(
-                checked = OvenOn,
+                checked = ovenUi.OvenOn,
                 onCheckedChange = { checked ->
-                    OvenOn = checked
+                    ovenViewModel.switchOven(checked)
                 },
                 labelOn = "On",
                 labelOff = "Off"
@@ -84,9 +83,9 @@ fun ovenScreen() {
                 title =  "Set temperature",
                 minValue = 90,
                 maxValue = 230,
-                currentTemperature = Oventemperature,
+                currentTemperature = ovenUi.Oventempeture,
                 onTemperatureChange = { value ->
-                    Oventemperature = value
+                    ovenViewModel.setTemp(value)
                 }
             )
 
@@ -96,9 +95,9 @@ fun ovenScreen() {
 
             ModeSelector(
                 title = "Grill Mode",
-                selectedMode = selectedGrillMode,
+                selectedMode = ovenUi.selectedGrillMode,
                 modes = Gmodes,
-                onModeSelected = { mode -> selectedGrillMode = mode }
+                onModeSelected = { mode -> ovenViewModel.changeGrillMode(mode)}
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -106,20 +105,20 @@ fun ovenScreen() {
             val Cmodes = listOf("Normal", "Economic", "Off")
 
             ModeSelector(
-                title = "Covnection Mode",
-                selectedMode = selectedConvMode,
+                title = stringResource(id = R.string.convMode),
+                selectedMode = ovenUi.selectedConvMode,
                 modes = Cmodes,
-                onModeSelected = { mode -> selectedConvMode = mode }
+                onModeSelected = { mode -> ovenViewModel.changeConvMode(mode)}
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-            val Hmodes = listOf("COnventional", "Top", "Bottom")
+            val Hmodes = listOf("Conventional", "Top", "Bottom")
 
             ModeSelector(
                 title = "Heat Mode",
-                selectedMode = selectedHeatMode,
+                selectedMode = ovenUi.selectedHeatMode,
                 modes = Hmodes,
-                onModeSelected = { mode -> selectedHeatMode = mode }
+                onModeSelected = { mode -> ovenViewModel.changeHeatMode(mode) }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
