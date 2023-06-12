@@ -200,7 +200,8 @@ fun DockComponent() {
 fun PreviewMyScreenComponent() {
     MyApplicationTheme {
         Column(Modifier.fillMaxSize()) {
-            MyScreenComponent(modifier = Modifier.weight(1f))
+            //MyScreenComponent(modifier = Modifier.weight(1f))
+            DevicesScreen(modifier = Modifier.weight(1f))
             DockComponent()
         }
     }
