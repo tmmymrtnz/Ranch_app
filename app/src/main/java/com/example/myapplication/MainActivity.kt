@@ -106,7 +106,7 @@ fun Navigation(navController: NavHostController){
             MyScreenComponent(navController = navController)
         }
         composable("devices"){
-            DevicesScreen(navController = navController)
+            DevicesScreen(viewModel = viewModel(), navController = navController)
         }
         composable("routines"){
             LightBulbScreen(lightViewModel = viewModel())

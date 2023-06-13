@@ -7,77 +7,108 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 
 @Composable
 fun DevicesScreen(
-    navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: DeviceViewModel = viewModel(),
+    navController: NavController
 ) {
-    val cardList = listOf(
-        CardItem(stringResource(id = R.string.fridge), painterResource(id = R.drawable.fridge)),
-        CardItem(stringResource(id = R.string.speaker), painterResource(id = R.drawable.speaker)),
-        CardItem(stringResource(id = R.string.stove), painterResource(id = R.drawable.stove)),
-        CardItem(stringResource(id = R.string.lightBulb), painterResource(id = R.drawable.lightbulb)),
-        CardItem(stringResource(id = R.string.curtain), painterResource(id = R.drawable.curtains))
-    )
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
-            .padding(16.dp)
-    ){
-        Column {
-            Text(text = stringResource(id = R.string.mydevices),
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.White,
-                modifier = Modifier.padding(16.dp)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Divider(color = Color.White)
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 170.dp)
+    val uiState by viewModel.uiState.collectAsState()
+
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(uiState.isLoading),
+        onRefresh = { viewModel.fetchDevices() }
+    ) {
+        Column (
+            modifier = modifier
+        ) {
+
+            IconButton(onClick = { viewModel.fetchDevices() }) {
+                Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+            }
+
+            Column (
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f)
             ){
-                items(cardList.size) { index ->
-                    RoundedCardComponent(
-                        title = cardList[index].title,
-                        icon = cardList[index].icon,
-                        navController = navController,
-                    )
+                if (uiState.isLoading)
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center
+                    ) {
+                        Text(
+                            text = "Loading...",
+                            fontSize = 16.sp
+                        )
+                    }
+                else {
+                    val list = uiState.devices?.result.orEmpty()
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(minSize = 170.dp)
+                    ){
+                        items(
+                            count = list.size,
+                            key = { index -> list[index].id.toString() }
+                        ) {
+                            index ->  RoundedCardComponent(title = list[index].name.toString(), icon = painterResource(
+                            id = when (list[index].type?.name.toString()) {
+                                "fridge" -> R.drawable.fridge
+                                "speaker" -> R.drawable.speaker
+                                "oven" -> R.drawable.stove
+                                "lamp" -> R.drawable.lightbulb
+                                "blinds" -> R.drawable.curtains
+                                else -> R.drawable.fridge
+                            }), navController = navController, modifier = Modifier)
+                        }
+
+
+                    }
                 }
             }
         }
-
     }
 }
 
-@Preview
+@Preview (showBackground = true)
 @Composable
-fun deviceScrenn() {
+fun DeviceScreen() {
     MyApplicationTheme {
-        //DevicesScreen()
+        DevicesScreen(viewModel = viewModel(), navController = NavController(LocalContext.current))
     }
 }
 
