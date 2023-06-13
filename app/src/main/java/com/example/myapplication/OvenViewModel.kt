@@ -10,6 +10,14 @@ class OvenViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(OvenUiState())
     val uiState: StateFlow<OvenUiState> = _uiState.asStateFlow()
 
+
+    private var ovenId: Int = -1
+
+    fun setId(id: Int) {
+        ovenId = id
+    }
+
+
     fun changeGrillMode( chosen : String){
         _uiState.update { currentState -> currentState.copy(selectedGrillMode = chosen) }
     }

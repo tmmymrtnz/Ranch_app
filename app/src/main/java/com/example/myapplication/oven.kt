@@ -33,10 +33,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 @Composable
-fun ovenScreen(ovenViewModel: OvenViewModel = viewModel()) {
-
+fun ovenScreen(id: Int,ovenViewModel: OvenViewModel = viewModel()) {
 
     val ovenUi by ovenViewModel.uiState.collectAsState()
+
+    ovenViewModel.setId(id)
 
     Box(
         modifier = Modifier
@@ -59,7 +60,7 @@ fun ovenScreen(ovenViewModel: OvenViewModel = viewModel()) {
                     modifier = Modifier.size(88.dp)
                 )
                 Text(
-                    text = stringResource(id = R.string.stove),
+                    text =  id.toString(), //stringResource(id = R.string.stove),
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
                     modifier = Modifier.padding(start = 8.dp)
@@ -141,6 +142,6 @@ fun ovenScreen(ovenViewModel: OvenViewModel = viewModel()) {
 @Composable
 fun ovenscreenPrev() {
     MyApplicationTheme {
-        ovenScreen()
+        ovenScreen(id=2)
     }
 }

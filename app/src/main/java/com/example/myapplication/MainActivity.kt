@@ -46,12 +46,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -117,11 +120,16 @@ fun Navigation(navController: NavHostController){
             RoutinesScreen(routineViewModel = viewModel())
         }
         composable("settings"){
-            ovenScreen(ovenViewModel = viewModel())
+           // ovenScreen(ovenViewModel = viewModel())
             //TODO hecerlo con las screen bien
         }
-        composable("oven"){
-            ovenScreen(ovenViewModel = viewModel())
+        composable(route = "oven/{id}",
+            arguments = listOf(
+                navArgument("id"){type = NavType.IntType}
+            )
+        ){ entry ->
+            val id = entry.arguments?.getInt("id") ?: 123
+            ovenScreen(id = id, ovenViewModel = viewModel())
         }
         composable("light bulb"){
             LightBulbScreen(lightViewModel = viewModel())
@@ -196,20 +204,19 @@ fun BotNavBar(
 fun RoundedCardComponent(
     title: String,
     icon: Painter,
+    type: String,
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    Button(onClick = {  if(title == "Oven"){
-        navController.navigate("oven")
-    }else if(title == "Curtain"){
-        navController.navigate("curtain")
-    }else if(title == "Light Bulb"){
-        navController.navigate("light bulb")
-    }else if(title == "Fridge"){
-        navController.navigate("fridge")
-    }else if(title == "Speaker"){
-        navController.navigate("speaker")
-    } },
+    Button(onClick = {
+        when (type) {
+            "fridge" -> navController.navigate("fridge")
+            "speaker" -> navController.navigate("speaker")
+            "oven" -> navController.navigate("oven/122")
+            "lamp" -> navController.navigate("light bulb")
+            "blinds" -> navController.navigate("curtain")
+            else -> navController.navigate("home")
+        } },
         modifier = Modifier
             .padding(4.dp)
             .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
@@ -236,28 +243,6 @@ fun RoundedCardComponent(
             }
         }
 
-}
-
-data class CardItem(
-    val title: String,
-    val icon: Painter,
-)
-
-@Composable
-fun IconActionButton(onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier.padding(4.dp),
-        contentPadding = PaddingValues(4.dp),
-        content = {
-            Icon(
-                painter = painterResource(id = R.drawable.chevron_right),
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(24.dp)
-            )
-        }
-    )
 }
 
 @Composable
@@ -318,6 +303,7 @@ fun MyScreenComponent(
                             items(items = devices){device ->
                                 RoundedCardComponent(
                                     title = device.name ?: "",
+                                    type = device.type?.name.toString(),
                                     icon = painterResource(id =
                                     when (device.type?.name.toString()) {
                                         "fridge" -> R.drawable.fridge

@@ -93,7 +93,7 @@ fun DevicesScreen(
                                 "lamp" -> R.drawable.lightbulb
                                 "blinds" -> R.drawable.curtains
                                 else -> R.drawable.fridge
-                            }), navController = navController, modifier = Modifier)
+                            }), navController = navController, modifier = Modifier, type = list[index].type?.name.toString())
                         }
 
 
