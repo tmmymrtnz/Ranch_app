@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,11 +26,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 
 @Composable
 fun DevicesScreen(
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     val cardList = listOf(
@@ -46,12 +50,22 @@ fun DevicesScreen(
             .padding(16.dp)
     ){
         Column {
-            Text(text = "My Devices", style = MaterialTheme.typography.headlineMedium, color = Color.White, modifier = Modifier.padding(16.dp))
+            Text(text = stringResource(id = R.string.mydevices),
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color.White,
+                modifier = Modifier.padding(16.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Divider(color = Color.White)
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(minSize = 170.dp)
             ){
                 items(cardList.size) { index ->
-                    RoundedCardComponent(title = cardList[index].title, icon = cardList[index].icon)
+                    RoundedCardComponent(
+                        title = cardList[index].title,
+                        icon = cardList[index].icon,
+                        navController = navController,
+                    )
                 }
             }
         }
@@ -63,7 +77,7 @@ fun DevicesScreen(
 @Composable
 fun deviceScrenn() {
     MyApplicationTheme {
-        DevicesScreen()
+        //DevicesScreen()
     }
 }
 

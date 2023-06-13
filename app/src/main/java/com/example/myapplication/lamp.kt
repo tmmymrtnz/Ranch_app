@@ -76,8 +76,8 @@ fun LightBulbScreen(lightViewModel: LightViewModel = viewModel()) {
                 onCheckedChange = { checked ->
                    lightViewModel.switchLight(checked)
                 },
-                labelOn = "On",
-                labelOff = "Off"
+                labelOn = stringResource(id = R.string.on),
+                labelOff = stringResource(id = R.string.off)
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -152,7 +152,7 @@ fun SetBrightness(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Set Brightness",
+                text = stringResource(id = R.string.setB),
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White,
                 textAlign = TextAlign.Center,
@@ -160,7 +160,7 @@ fun SetBrightness(
             )
             Spacer(modifier = Modifier.height(16.dp))
             LabeledSliderBrightness(
-                label = "Brightness Level",
+                label = stringResource(id = R.string.bright),
                 value = brightness,
                 onValueChange = { value ->
                     onBrightnessChange(value)
@@ -223,7 +223,7 @@ fun ColorPicker(initialColor: Color, onColorChanged: (Color) -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Pick color",
+                text = stringResource(id = R.string.pickColor),
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White,
                 textAlign = TextAlign.Center,
@@ -236,15 +236,15 @@ fun ColorPicker(initialColor: Color, onColorChanged: (Color) -> Unit) {
                     .background(color = selectedColor)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            LabeledSlider("Red", red.toFloat(), 0f, 255f) { value ->
+            LabeledSlider(stringResource(id = R.string.r), red.toFloat(), 0f, 255f) { value ->
                 color = Color(value.toInt() / 255f, green / 255f, blue / 255f)
                 onColorChanged(color) // Call the provided function with the updated color
             }
-            LabeledSlider("Green", green.toFloat(), 0f, 255f) { value ->
+            LabeledSlider(stringResource(id = R.string.g), green.toFloat(), 0f, 255f) { value ->
                 color = Color(red / 255f, value.toInt() / 255f, blue / 255f)
                 onColorChanged(color) // Call the provided function with the updated color
             }
-            LabeledSlider("Blue", blue.toFloat(), 0f, 255f) { value ->
+            LabeledSlider(stringResource(id = R.string.b), blue.toFloat(), 0f, 255f) { value ->
                 color = Color(red / 255f, green / 255f, value.toInt() / 255f)
                 onColorChanged(color) // Call the provided function with the updated color
             }

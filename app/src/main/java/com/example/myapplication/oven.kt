@@ -73,14 +73,14 @@ fun ovenScreen(ovenViewModel: OvenViewModel = viewModel()) {
                 onCheckedChange = { checked ->
                     ovenViewModel.switchOven(checked)
                 },
-                labelOn = "On",
-                labelOff = "Off"
+                labelOn = stringResource(id = R.string.on),
+                labelOff = stringResource(id = R.string.off)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             TemperatureSlider(
-                title =  "Set temperature",
+                title =  stringResource(id = R.string.setTemmp),
                 minValue = 90,
                 maxValue = 230,
                 currentTemperature = ovenUi.Oventempeture,
@@ -91,10 +91,12 @@ fun ovenScreen(ovenViewModel: OvenViewModel = viewModel()) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            val Gmodes = listOf("Complete", "Economic", "Off")
+            val Gmodes = listOf(stringResource(id = R.string.complete),
+                stringResource(id = R.string.econmic),
+                stringResource(id = R.string.off))
 
             ModeSelector(
-                title = "Grill Mode",
+                title = stringResource(id = R.string.grillMode),
                 selectedMode = ovenUi.selectedGrillMode,
                 modes = Gmodes,
                 onModeSelected = { mode -> ovenViewModel.changeGrillMode(mode)}
@@ -102,7 +104,9 @@ fun ovenScreen(ovenViewModel: OvenViewModel = viewModel()) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            val Cmodes = listOf("Normal", "Economic", "Off")
+            val Cmodes = listOf(stringResource(id = R.string.normal),
+                stringResource(id = R.string.econmic),
+                stringResource(id = R.string.off))
 
             ModeSelector(
                 title = stringResource(id = R.string.convMode),
@@ -112,10 +116,14 @@ fun ovenScreen(ovenViewModel: OvenViewModel = viewModel()) {
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-            val Hmodes = listOf("Conventional", "Top", "Bottom")
+            val Hmodes = listOf(
+                stringResource(id = R.string.conventional),
+                stringResource(id = R.string.top),
+                stringResource(id = R.string.bottom)
+            )
 
             ModeSelector(
-                title = "Heat Mode",
+                title =  stringResource(id = R.string.heatMode),
                 selectedMode = ovenUi.selectedHeatMode,
                 modes = Hmodes,
                 onModeSelected = { mode -> ovenViewModel.changeHeatMode(mode) }

@@ -73,10 +73,13 @@ fun fridgeScreen(fridgeViewModel: FridgeViewModel = viewModel()) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            val modes = listOf("Default", "Vacation", "Party")
+            val modes = listOf(
+                stringResource(id = R.string.defaul),
+                stringResource(id = R.string.vacation),
+                stringResource(id = R.string.party))
 
             ModeSelector(
-                title = "Fridge Mode",
+                title = stringResource(id = R.string.Fmode),
                 selectedMode = fridgeUi.selectedFridgeMode,
                 modes = modes,
                 onModeSelected = { mode -> fridgeViewModel.changeMode(mode)}
@@ -85,7 +88,7 @@ fun fridgeScreen(fridgeViewModel: FridgeViewModel = viewModel()) {
             Spacer(modifier = Modifier.height(16.dp))
 
             TemperatureSlider(
-                title =  "Set temperature",
+                title = stringResource(id = R.string.setTemmp),
                 minValue = 2,
                 maxValue = 8,
                 currentTemperature = fridgeUi.fridgeTemp,
@@ -97,7 +100,7 @@ fun fridgeScreen(fridgeViewModel: FridgeViewModel = viewModel()) {
             Spacer(modifier = Modifier.height(16.dp))
 
             TemperatureSlider(
-                title =  "Set Freezer temperature",
+                title =  stringResource(id = R.string.setFTemmp),
                 minValue = -20,
                 maxValue = -8,
                 currentTemperature = fridgeUi.freezerTemp,
@@ -182,10 +185,6 @@ fun FridgeModeButton(
     }
 }
 
-
-enum class FridgeMode {
-    Default, Vacation, Party
-}
 
 
 @Composable

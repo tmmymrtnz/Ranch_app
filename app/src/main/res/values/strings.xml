@@ -4,8 +4,39 @@
     <string name="speaker">Speaker</string>
     <string name="lightBulb">Light Bulb</string>
     <string name="curtain">Curtain</string>
-    <string name="stove">Stove</string>
+    <string name="stove">Oven</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="mydevices">My Devices</string>
+    <!-- string de oven -->
     <string name="convMode">Set Convection Mode</string>
+    <string name="grillMode">Set Grill Mode</string>
+    <string name="heatMode">Set Heat Mode</string>
+    <string name="setTemmp">Set temperature</string>
+    <string name="normal">Normal</string>
+    <string name="econmic">Economic</string>
+    <string name="off">Off</string>
+    <string name="on">ON</string>
+    <string name="complete">Complete</string>
+    <string name="conventional">Conventional</string>
+    <string name="top">Top</string>
+    <string name="bottom">Bottom</string>
+    <!-- string de fridege-->
+    <string name="setFTemmp">Set Freezer temperature</string>
+    <string name="Fmode">Fridge Mode</string>
+    <string name="defaul">Default</string>
+    <string name="vacation">Vacation</string>
+    <string name="party">Party</string>
+    <!-- string de curtain -->
+
+    <!-- string de speaker -->
+
+    <!-- string de lightbulb -->
+    <string name="setB">Set Brightness</string>
+    <string name="bright">Brightness Level</string>
+    <string name="pickColor">Pick color</string>
+    <string name="r">Red</string>
+    <string name="g">Green</string>
+    <string name="b">Blue</string>
+
 </resources>

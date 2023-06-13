@@ -103,17 +103,35 @@ class MainActivity : ComponentActivity() {
 fun Navigation(navController: NavHostController){
     NavHost(navController = navController, startDestination = "home" ){
         composable("home"){
-            MyScreenComponent()
+            MyScreenComponent(navController = navController)
         }
         composable("devices"){
-            DevicesScreen()
+            DevicesScreen(navController = navController)
         }
         composable("routines"){
             LightBulbScreen(lightViewModel = viewModel())
+            //TODO hecerlo con las screen bien
         }
         composable("settings"){
             ovenScreen(ovenViewModel = viewModel())
+            //TODO hecerlo con las screen bien
         }
+        composable("oven"){
+            ovenScreen(ovenViewModel = viewModel())
+        }
+        composable("light bulb"){
+            LightBulbScreen(lightViewModel = viewModel())
+        }
+        composable("fridge"){
+            fridgeScreen(fridgeViewModel = viewModel())
+        }
+        composable("curtain"){
+           //TODO no esta la screen hecha
+        }
+        composable("speaker"){
+            //TODO no esta la screen hecha
+        }
+
     }
 }
 
@@ -174,31 +192,45 @@ fun BotNavBar(
 fun RoundedCardComponent(
     title: String,
     icon: Painter,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = Modifier
-            .padding(10.dp)
+    Button(onClick = {  if(title == "Oven"){
+        navController.navigate("oven")
+    }else if(title == "Curtain"){
+        navController.navigate("curtain")
+    }else if(title == "Light Bulb"){
+        navController.navigate("light bulb")
+    }else if(title == "Fridge"){
+        navController.navigate("fridge")
+    }else if(title == "Speaker"){
+        navController.navigate("speaker")
+    } },
+        modifier = Modifier.padding(4.dp)
             .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+            .padding(10.dp),
+        contentPadding = PaddingValues(4.dp),
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = icon,
-                contentDescription = "",
-                Modifier.size(50.dp)
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineSmall,
-                color = Color.White
-            )
-            IconActionButton(onClick = { })
+
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = icon,
+                    contentDescription = "",
+                    Modifier.size(50.dp)
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color.White
+                )
+
+            }
         }
-    }
+
 }
 
 data class CardItem(
@@ -225,7 +257,8 @@ fun IconActionButton(onClick: () -> Unit) {
 
 @Composable
 fun MyScreenComponent(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavController,
 ) {
     val cardList = listOf(
         CardItem(stringResource(id = R.string.fridge), painterResource(id = R.drawable.fridge)),
@@ -269,7 +302,8 @@ fun MyScreenComponent(
                 items(items = cardList){item ->
                     RoundedCardComponent(
                         title = item.title,
-                        icon = item.icon
+                        icon = item.icon,
+                        navController =  navController
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }
