@@ -109,8 +109,7 @@ fun Navigation(navController: NavHostController){
             DevicesScreen(viewModel = viewModel(), navController = navController)
         }
         composable("routines"){
-            LightBulbScreen(lightViewModel = viewModel())
-            //TODO hecerlo con las screen bien
+            RoutinesScreen(routineViewModel = viewModel())
         }
         composable("settings"){
             ovenScreen(ovenViewModel = viewModel())
@@ -206,7 +205,8 @@ fun RoundedCardComponent(
     }else if(title == "Speaker"){
         navController.navigate("speaker")
     } },
-        modifier = Modifier.padding(4.dp)
+        modifier = Modifier
+            .padding(4.dp)
             .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
             .padding(10.dp),
         contentPadding = PaddingValues(4.dp),
