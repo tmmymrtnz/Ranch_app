@@ -23,8 +23,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
-
-
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.myapplication.ui.theme.MyApplicationTheme
 
 
 @Composable
@@ -56,6 +56,14 @@ fun DevicesScreen(
             }
         }
 
+    }
+}
+
+@Preview
+@Composable
+fun deviceScrenn() {
+    MyApplicationTheme {
+        DevicesScreen()
     }
 }
 

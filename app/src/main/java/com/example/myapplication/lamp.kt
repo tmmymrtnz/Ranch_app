@@ -82,7 +82,9 @@ fun LightBulbScreen(lightViewModel: LightViewModel = viewModel()) {
             Spacer(modifier = Modifier.height(16.dp))
 
             // Color Picker
-            ColorPickerExample(initialColor = lightUi.lightColor)
+            ColorPicker(initialColor = lightUi.lightColor){
+                color ->  lightViewModel.changeColor(color)
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -200,7 +202,7 @@ fun LabeledSliderBrightness(label: String, value: Float, onValueChange: (Float) 
 
 
 @Composable
-fun ColorPickerExample(initialColor: Color) {
+fun ColorPicker(initialColor: Color, onColorChanged: (Color) -> Unit) {
     var color by remember { mutableStateOf(initialColor) }
 
     val red = remember(color) { color.red * 255 }.toInt()
@@ -209,11 +211,11 @@ fun ColorPickerExample(initialColor: Color) {
 
     val selectedColor = remember(red, green, blue) {
         Color(red, green, blue)
-
     }
+
     Box(
         modifier = Modifier
-        .background(color = MaterialTheme.colorScheme.tertiary, RoundedCornerShape(20.dp))
+            .background(color = MaterialTheme.colorScheme.tertiary, RoundedCornerShape(20.dp))
     ) {
         Column(
             modifier = Modifier
@@ -236,17 +238,20 @@ fun ColorPickerExample(initialColor: Color) {
             Spacer(modifier = Modifier.height(16.dp))
             LabeledSlider("Red", red.toFloat(), 0f, 255f) { value ->
                 color = Color(value.toInt() / 255f, green / 255f, blue / 255f)
+                onColorChanged(color) // Call the provided function with the updated color
             }
             LabeledSlider("Green", green.toFloat(), 0f, 255f) { value ->
                 color = Color(red / 255f, value.toInt() / 255f, blue / 255f)
+                onColorChanged(color) // Call the provided function with the updated color
             }
             LabeledSlider("Blue", blue.toFloat(), 0f, 255f) { value ->
                 color = Color(red / 255f, green / 255f, value.toInt() / 255f)
+                onColorChanged(color) // Call the provided function with the updated color
             }
         }
     }
-
 }
+
 
 
 
