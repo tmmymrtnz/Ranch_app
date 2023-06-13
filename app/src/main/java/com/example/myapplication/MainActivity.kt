@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
@@ -32,6 +34,9 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -103,7 +108,7 @@ class MainActivity : ComponentActivity() {
 fun Navigation(navController: NavHostController){
     NavHost(navController = navController, startDestination = "home" ){
         composable("home"){
-            MyScreenComponent(navController = navController)
+            MyScreenComponent(homeViewModel = viewModel(), navController = navController)
         }
         composable("devices"){
             DevicesScreen(viewModel = viewModel(), navController = navController)
@@ -258,15 +263,15 @@ fun IconActionButton(onClick: () -> Unit) {
 @Composable
 fun MyScreenComponent(
     modifier: Modifier = Modifier,
+    homeViewModel: DeviceViewModel = viewModel(),
     navController: NavController,
 ) {
-    val cardList = listOf(
-        CardItem(stringResource(id = R.string.fridge), painterResource(id = R.drawable.fridge)),
-        CardItem(stringResource(id = R.string.speaker), painterResource(id = R.drawable.speaker)),
-        CardItem(stringResource(id = R.string.stove), painterResource(id = R.drawable.stove)),
-        CardItem(stringResource(id = R.string.lightBulb), painterResource(id = R.drawable.lightbulb)),
-        CardItem(stringResource(id = R.string.curtain), painterResource(id = R.drawable.curtains))
-    )
+
+    val uiState by homeViewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit){
+        homeViewModel.fetchDevices()
+    }
 
     Box(
         modifier = modifier
@@ -295,19 +300,55 @@ fun MyScreenComponent(
             Spacer(modifier = Modifier.height(8.dp))
             Divider(color = Color.White)
             Spacer(modifier = Modifier.height(8.dp))
+            val groupedDevices = uiState.devices?.result?.groupBy { it.room?.name }
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ){
-                items(items = cardList){item ->
-                    RoundedCardComponent(
-                        title = item.title,
-                        icon = item.icon,
-                        navController =  navController
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
+                groupedDevices?.forEach { (room, devices) ->
+                    item {
+                        Text(
+                            text = room ?: "",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = Color.White,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+
+                        LazyRow {
+                            items(items = devices){device ->
+                                RoundedCardComponent(
+                                    title = device.name ?: "",
+                                    icon = painterResource(id =
+                                    when (device.type?.name.toString()) {
+                                        "fridge" -> R.drawable.fridge
+                                        "speaker" -> R.drawable.speaker
+                                        "oven" -> R.drawable.stove
+                                        "lamp" -> R.drawable.lightbulb
+                                        "blinds" -> R.drawable.curtains
+                                        else -> R.drawable.fridge
+                                    }),
+                                    navController =  navController
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                 }
             }
+//            LazyColumn(
+//                horizontalAlignment = Alignment.CenterHorizontally,
+//                modifier = Modifier.fillMaxWidth()
+//            ){
+//                items(items = cardList){item ->
+//                    RoundedCardComponent(
+//                        title = item.title,
+//                        icon = item.icon,
+//                        navController =  navController
+//                    )
+//                    Spacer(modifier = Modifier.height(8.dp))
+//                }
+//            }
         }
     }
 }
