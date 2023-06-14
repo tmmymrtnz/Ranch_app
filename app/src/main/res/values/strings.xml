@@ -39,4 +39,7 @@
     <string name="g">Green</string>
     <string name="b">Blue</string>
 
+    <!-- string de devices -->
+    <string name="devicesHeader">Devices</string>
+
 </resources>

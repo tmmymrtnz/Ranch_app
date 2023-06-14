@@ -56,6 +56,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.myapplication.data.network.model.Result
 import com.example.myapplication.devices.DeviceViewModel
+import com.example.myapplication.devices.DevicesScreen
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -115,7 +116,7 @@ fun Navigation(navController: NavHostController){
             MyScreenComponent(homeViewModel = viewModel(), navController = navController)
         }
         composable("devices"){
-            DevicesScreen(viewModel = viewModel(), navController = navController)
+            DevicesScreen(viewModel = viewModel(), typesViewModel = viewModel(), navController = navController)
         }
         composable("routines"){
             RoutinesScreen(routineViewModel = viewModel())
