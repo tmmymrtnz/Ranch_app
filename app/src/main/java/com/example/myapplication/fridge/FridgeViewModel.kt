@@ -1,6 +1,7 @@
-package com.example.myapplication
+package com.example.myapplication.fridge
 
 import androidx.lifecycle.ViewModel
+import com.example.myapplication.fridge.FridgeUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

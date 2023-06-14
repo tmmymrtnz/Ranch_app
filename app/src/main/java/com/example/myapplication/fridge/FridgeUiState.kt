@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.fridge
 
 data class FridgeUiState(
     val selectedFridgeMode: String = "Default",

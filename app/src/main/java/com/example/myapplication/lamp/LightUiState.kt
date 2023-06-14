@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.lamp
 
 import androidx.compose.ui.graphics.Color
 

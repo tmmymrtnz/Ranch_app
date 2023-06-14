@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.devices
 
 import com.example.myapplication.data.network.RetrofitClient
 import kotlinx.coroutines.Job

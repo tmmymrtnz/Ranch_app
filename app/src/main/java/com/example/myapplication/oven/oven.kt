@@ -19,9 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,14 +27,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.oven.OvenViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 @Composable
-fun ovenScreen(id: Int,ovenViewModel: OvenViewModel = viewModel()) {
+fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
 
     val ovenUi by ovenViewModel.uiState.collectAsState()
 
     ovenViewModel.setId(id)
+
+    ovenViewModel.changeConvMode(ovenUi.device?.state?.convection.toString())
 
     Box(
         modifier = Modifier
@@ -60,7 +60,7 @@ fun ovenScreen(id: Int,ovenViewModel: OvenViewModel = viewModel()) {
                     modifier = Modifier.size(88.dp)
                 )
                 Text(
-                    text =  id.toString(), //stringResource(id = R.string.stove),
+                    text =  ovenUi.device?.name.toString(), //stringResource(id = R.string.stove),
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
                     modifier = Modifier.padding(start = 8.dp)
@@ -142,6 +142,6 @@ fun ovenScreen(id: Int,ovenViewModel: OvenViewModel = viewModel()) {
 @Composable
 fun ovenscreenPrev() {
     MyApplicationTheme {
-        ovenScreen(id=2)
+        ovenScreen(id="2")
     }
 }

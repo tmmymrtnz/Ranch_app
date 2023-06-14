@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.devices
 
 import com.example.myapplication.data.network.model.DeviceList
 
