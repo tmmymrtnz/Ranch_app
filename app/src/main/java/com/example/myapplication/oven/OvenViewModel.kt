@@ -3,6 +3,7 @@ package com.example.myapplication.oven
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.network.RetrofitClient
+import com.example.myapplication.data.network.model.Device
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,6 +39,11 @@ class OvenViewModel : ViewModel() {
                     _uiState.update {
                         it.copy(
                             device = response.body(),
+                            selectedGrillMode =  response.body()?.result?.state?.grill.toString()  ,
+                            selectedConvMode = response.body()?.result?.state?.convection.toString(),
+                            selectedHeatMode = response.body()?.result?.state?.heat.toString(),
+                            Oventempeture = response.body()?.result?.state?.temperature ?:0,
+                            OvenOn = response.body()?.result?.state?.status.equals("on"),
                             isLoading = false
                         )
                     }
@@ -53,9 +59,6 @@ class OvenViewModel : ViewModel() {
             }
 
         }
-        println(uiState.value.device?.result?.state?.grill.toString())
-        _uiState.update { currentState -> currentState.copy(selectedGrillMode = uiState.value.device?.result?.state?.grill.toString()) }
-
     }
 
 
@@ -88,6 +91,35 @@ class OvenViewModel : ViewModel() {
         }
     }
 
+    fun doActionInt(id: String,actionName: String, actionParams: List<Int>?){
+        fetchJob?.cancel()
+        fetchJob = viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            viewModelScope.launch {
+                runCatching {
+                    RetrofitClient.getApiService()?.makeActionInt(id,actionName,actionParams)
+                        ?: throw Exception("API Service is null")
+                }.onSuccess { response ->
+                    _uiState.update {
+                        it.copy(
+                            device = response.body(),
+                            isLoading = false
+                        )
+                    }
+                }.onFailure { e ->
+                    _uiState.update {
+                        it.copy(
+                            message = e.message,
+                            isLoading = false
+                        )
+                    }
+                }
+
+            }
+
+        }
+    }
+
 
     fun changeGrillMode( chosen : String){
 
@@ -96,16 +128,21 @@ class OvenViewModel : ViewModel() {
 
         _uiState.update { currentState -> currentState.copy(selectedGrillMode = chosen) }
 
-        fetchADevice(ovenId)
     }
     fun changeHeatMode( chosen : String){
+        val chosenList: List<String> = listOf(chosen)
+        doAction(ovenId, "setHeat", chosenList)
         _uiState.update { currentState -> currentState.copy(selectedHeatMode = chosen) }
     }
     fun changeConvMode( chosen : String){
+        val chosenList: List<String> = listOf(chosen)
+        doAction(ovenId, "setConvection", chosenList)
         _uiState.update { currentState -> currentState.copy(selectedConvMode = chosen) }
     }
 
     fun setTemp( new : Int){
+        val chosenList: List<Int> = listOf(new)
+        doActionInt(ovenId, "setTemperature", chosenList)
         _uiState.update { currentState -> currentState.copy(Oventempeture = new) }
     }
 
@@ -116,7 +153,6 @@ class OvenViewModel : ViewModel() {
             doAction(ovenId,"turnOn", listOf())
         }
         _uiState.update { currentState -> currentState.copy(OvenOn = state) }
-        fetchADevice(ovenId)
 
     }
 

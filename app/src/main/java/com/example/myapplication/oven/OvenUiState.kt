@@ -9,7 +9,7 @@ data class OvenUiState(
     val message: String? = null,
     val device: Device? = null,
 
-    val selectedGrillMode: String = device?.result?.state?.grill.toString(),
+    val selectedGrillMode: String = "off",
     val selectedConvMode:String = "off",
     val selectedHeatMode: String ="top",
     val Oventempeture: Int = 180,

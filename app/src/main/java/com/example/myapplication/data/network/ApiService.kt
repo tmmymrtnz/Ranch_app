@@ -25,4 +25,9 @@ interface ApiService {
     suspend fun makeAction(
         @Path("id")id: String, @Path("actionName")actionName: String, @Body actionParams: List<String>?
     ): Response<Device>
+
+    @PUT("devices/{id}/{actionName}")
+    suspend fun makeActionInt(
+        @Path("id")id: String, @Path("actionName")actionName: String, @Body actionParams: List<Int>?
+    ): Response<Device>
 }

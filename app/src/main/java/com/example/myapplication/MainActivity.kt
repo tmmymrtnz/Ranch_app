@@ -57,6 +57,7 @@ import androidx.navigation.navArgument
 import com.example.myapplication.data.network.model.Result
 import com.example.myapplication.devices.DeviceViewModel
 import com.example.myapplication.devices.DevicesScreen
+import com.example.myapplication.oven.OvenViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -111,6 +112,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Navigation(navController: NavHostController){
+
     NavHost(navController = navController, startDestination = "home" ){
         composable("home"){
             MyScreenComponent(homeViewModel = viewModel(), navController = navController)
@@ -129,8 +131,10 @@ fun Navigation(navController: NavHostController){
                 navArgument("id"){type = NavType.StringType}
             )
         ){ entry ->
-            val id = entry.arguments?.getString("id") ?: "xd"
-            ovenScreen(id = id, ovenViewModel = viewModel())
+            val id = entry.arguments?.getString("id") ?: "no id"
+            val ovVM = OvenViewModel()
+            ovVM.fetchADevice(id)
+            ovenScreen(id = id, ovenViewModel = ovVM)
         }
         composable("light bulb"){
             LightBulbScreen(lightViewModel = viewModel())
