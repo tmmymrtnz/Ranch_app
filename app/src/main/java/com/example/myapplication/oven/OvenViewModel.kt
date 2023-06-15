@@ -17,7 +17,7 @@ class OvenViewModel : ViewModel() {
     private var fetchJob: Job? = null
 
 
-    private var ovenId: String = "XD"
+    private var ovenId: String = "no id"
 
     fun setId(id: String) {
         ovenId = id

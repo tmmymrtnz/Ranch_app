@@ -57,6 +57,7 @@ import androidx.navigation.navArgument
 import com.example.myapplication.data.network.model.Result
 import com.example.myapplication.devices.DeviceViewModel
 import com.example.myapplication.devices.DevicesScreen
+import com.example.myapplication.fridge.FridgeViewModel
 import com.example.myapplication.oven.OvenViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
@@ -139,8 +140,15 @@ fun Navigation(navController: NavHostController){
         composable("light bulb"){
             LightBulbScreen(lightViewModel = viewModel())
         }
-        composable("fridge"){
-            fridgeScreen(fridgeViewModel = viewModel())
+        composable("fridge/{id}",
+            arguments = listOf(
+                navArgument("id"){type = NavType.StringType}
+            )
+        ){entry ->
+            val id = entry.arguments?.getString("id") ?: "no id"
+            val fdVM = FridgeViewModel()
+            fdVM.fetchADevice(id)
+            fridgeScreen(id = id,fridgeViewModel = fdVM)
         }
         composable("curtain"){
            //TODO no esta la screen hecha
@@ -216,7 +224,7 @@ fun RoundedCardComponent(
     Button(onClick = {
         val id:String =result.id.toString()
         when (result.type?.name.toString()) {
-            "fridge" -> navController.navigate("fridge")
+            "refrigerator" -> navController.navigate("fridge/$id")
             "speaker" -> navController.navigate("speaker")
             "oven" -> navController.navigate("oven/$id")
             "lamp" -> navController.navigate("light bulb")

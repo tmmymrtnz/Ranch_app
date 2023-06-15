@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -38,9 +39,15 @@ import com.example.myapplication.fridge.FridgeViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 @Composable
-fun fridgeScreen(fridgeViewModel: FridgeViewModel = viewModel()) {
+fun fridgeScreen(id: String ,fridgeViewModel: FridgeViewModel = viewModel()) {
 
     val fridgeUi by fridgeViewModel.uiState.collectAsState()
+
+    fridgeViewModel.setId(id)
+
+    LaunchedEffect(Unit){
+        fridgeViewModel.fetchADevice(id)
+    }
 
     Box(
         modifier = Modifier
@@ -83,7 +90,11 @@ fun fridgeScreen(fridgeViewModel: FridgeViewModel = viewModel()) {
                 title = stringResource(id = R.string.Fmode),
                 selectedMode = fridgeUi.selectedFridgeMode,
                 modes = modes,
-                onModeSelected = { mode -> fridgeViewModel.changeMode(mode)}
+                onModeSelected = { mode ->
+                    if(mode !=fridgeUi.selectedFridgeMode ){
+                        fridgeViewModel.changeMode(mode)
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -94,7 +105,9 @@ fun fridgeScreen(fridgeViewModel: FridgeViewModel = viewModel()) {
                 maxValue = 8,
                 currentTemperature = fridgeUi.fridgeTemp,
                 onTemperatureChange = { value ->
-                   fridgeViewModel.setFridgeTemp(value)
+                    if(value != fridgeUi.fridgeTemp){
+                        fridgeViewModel.setFridgeTemp(value)
+                    }
                 }
             )
 
@@ -106,7 +119,9 @@ fun fridgeScreen(fridgeViewModel: FridgeViewModel = viewModel()) {
                 maxValue = -8,
                 currentTemperature = fridgeUi.freezerTemp,
                 onTemperatureChange = { value ->
-                    fridgeViewModel.setFreezerTemp(value)
+                    if(value != fridgeUi.fridgeTemp){
+                        fridgeViewModel.setFreezerTemp(value)
+                    }
                 }
             )
 
@@ -119,7 +134,7 @@ fun fridgeScreen(fridgeViewModel: FridgeViewModel = viewModel()) {
 @Composable
 fun fridescreenPrev() {
     MyApplicationTheme {
-        fridgeScreen()
+        fridgeScreen("XD")
     }
 }
 
