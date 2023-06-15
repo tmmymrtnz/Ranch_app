@@ -17,8 +17,11 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,7 +40,11 @@ fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
 
     ovenViewModel.setId(id)
 
-    ovenViewModel.changeConvMode(ovenUi.device?.state?.convection.toString())
+    LaunchedEffect(Unit){
+        ovenViewModel.fetchADevice(id)
+    }
+
+
 
     Box(
         modifier = Modifier
@@ -60,7 +67,7 @@ fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
                     modifier = Modifier.size(88.dp)
                 )
                 Text(
-                    text =  ovenUi.device?.name.toString(), //stringResource(id = R.string.stove),
+                    text =   ovenUi.device?.result?.name.toString(), //stringResource(id = R.string.stove),
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
                     modifier = Modifier.padding(start = 8.dp)
@@ -68,11 +75,12 @@ fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
             }
             Spacer(modifier = Modifier.height(8.dp))
             Divider(color = Color.White)
-
+            var currentStatus = ovenUi.device?.result?.state?.status?.equals("on", ignoreCase = true) == true
             SwitchWithLabels(
-                checked = ovenUi.OvenOn,
+                checked = currentStatus,
                 onCheckedChange = { checked ->
-                    ovenViewModel.switchOven(checked)
+                    ovenViewModel.switchOven(currentStatus)
+                    currentStatus = !currentStatus
                 },
                 labelOn = stringResource(id = R.string.on),
                 labelOff = stringResource(id = R.string.off)
@@ -84,7 +92,7 @@ fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
                 title =  stringResource(id = R.string.setTemmp),
                 minValue = 90,
                 maxValue = 230,
-                currentTemperature = ovenUi.Oventempeture,
+                currentTemperature = ovenUi.device?.result?.state?.temperature ?: 0,
                 onTemperatureChange = { value ->
                     ovenViewModel.setTemp(value)
                 }
@@ -96,11 +104,17 @@ fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
                 stringResource(id = R.string.econmic),
                 stringResource(id = R.string.off))
 
+            println(ovenUi.device?.result?.state?.grill.toString())
             ModeSelector(
                 title = stringResource(id = R.string.grillMode),
-                selectedMode = ovenUi.selectedGrillMode,
+                selectedMode = ovenUi.device?.result?.state?.grill.toString(),
                 modes = Gmodes,
-                onModeSelected = { mode -> ovenViewModel.changeGrillMode(mode)}
+                onModeSelected = { mode ->
+                    if(mode!=ovenUi.device?.result?.state?.grill.toString()){
+                        ovenViewModel.changeGrillMode(mode)
+                    }
+
+                }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -111,7 +125,7 @@ fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
 
             ModeSelector(
                 title = stringResource(id = R.string.convMode),
-                selectedMode = ovenUi.selectedConvMode,
+                selectedMode = ovenUi.device?.result?.state?.convection.toString(),
                 modes = Cmodes,
                 onModeSelected = { mode -> ovenViewModel.changeConvMode(mode)}
             )
@@ -125,7 +139,7 @@ fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
 
             ModeSelector(
                 title =  stringResource(id = R.string.heatMode),
-                selectedMode = ovenUi.selectedHeatMode,
+                selectedMode = ovenUi.device?.result?.state?.heat.toString(),
                 modes = Hmodes,
                 onModeSelected = { mode -> ovenViewModel.changeHeatMode(mode) }
             )
