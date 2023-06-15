@@ -58,6 +58,7 @@ import com.example.myapplication.data.network.model.Result
 import com.example.myapplication.devices.DeviceViewModel
 import com.example.myapplication.devices.DevicesScreen
 import com.example.myapplication.fridge.FridgeViewModel
+import com.example.myapplication.lamp.LightViewModel
 import com.example.myapplication.oven.OvenViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
@@ -137,8 +138,14 @@ fun Navigation(navController: NavHostController){
             ovVM.fetchADevice(id)
             ovenScreen(id = id, ovenViewModel = ovVM)
         }
-        composable("light bulb"){
-            LightBulbScreen(lightViewModel = viewModel())
+        composable("light bulb/{id}", arguments = listOf(
+            navArgument("id"){type = NavType.StringType}
+        )
+        ){ entry ->
+            val id = entry.arguments?.getString("id") ?: "no id"
+            val lbVM = LightViewModel()
+            lbVM.fetchADevice(id)
+            LightBulbScreen(id = id ,lightViewModel = lbVM)
         }
         composable("fridge/{id}",
             arguments = listOf(
@@ -227,7 +234,7 @@ fun RoundedCardComponent(
             "refrigerator" -> navController.navigate("fridge/$id")
             "speaker" -> navController.navigate("speaker")
             "oven" -> navController.navigate("oven/$id")
-            "lamp" -> navController.navigate("light bulb")
+            "lamp" -> navController.navigate("light bulb/$id")
             "blinds" -> navController.navigate("curtain")
             else -> navController.navigate("home")
         } },

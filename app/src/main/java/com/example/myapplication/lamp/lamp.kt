@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -21,6 +22,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,13 +37,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.lamp.LightUiState
 import com.example.myapplication.lamp.LightViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 @Composable
-fun LightBulbScreen(lightViewModel: LightViewModel = viewModel()) {
+fun LightBulbScreen(id : String ,lightViewModel: LightViewModel = viewModel()) {
 
     val lightUi by lightViewModel.uiState.collectAsState()
+
+    lightViewModel.setId(id)
+
+    LaunchedEffect(Unit){
+        lightViewModel.fetchADevice(id)
+    }
 
     Box(
         modifier = Modifier
@@ -81,18 +90,26 @@ fun LightBulbScreen(lightViewModel: LightViewModel = viewModel()) {
                 labelOff = stringResource(id = R.string.off)
             )
             Spacer(modifier = Modifier.height(16.dp))
-
+            Log.d("xdddd", lightUi.lightColor)
             // Color Picker
-            ColorPicker(initialColor = lightUi.lightColor){
+            ColorPicker(lightUi = lightUi){
                 color ->  lightViewModel.changeColor(color)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Brightness Slider
-            SetBrightness(
-                lightUi.brightness,
-                onBrightnessChange = { value -> lightViewModel.setBrightness(value) }
+            TemperatureSlider(
+                title =  stringResource(id = R.string.bright),
+                minValue = 0,
+                maxValue = 100,
+                currentTemperature = lightUi.brightness,
+                onTemperatureChange = { value ->
+                    if(value != lightUi.brightness){
+                        lightViewModel.setBrightness(value)
+                    }
+                },
+                unit = "%"
             )
         }
     }
@@ -130,81 +147,21 @@ fun SwitchWithLabels(
 @Composable
 fun PreviewSwitchWithLabels() {
     MyApplicationTheme {
-        LightBulbScreen()
+        LightBulbScreen("xd")
     }
 }
 
 
 
 
-@Composable
-fun SetBrightness(
-    brightness: Float,
-    onBrightnessChange: (Float) -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.tertiary, RoundedCornerShape(20.dp))
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = stringResource(id = R.string.setB),
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.White,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            LabeledSliderBrightness(
-                label = stringResource(id = R.string.bright),
-                value = brightness,
-                onValueChange = { value ->
-                    onBrightnessChange(value)
-                }
-            )
-            Text(
-                text = "${(brightness * 100).toInt()}%",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.White
-            )
-        }
-    }
 
-}
-
-
-
-@Composable
-fun LabeledSliderBrightness(label: String, value: Float, onValueChange: (Float) -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.White,
-            modifier = Modifier.width(100.dp),
-            textAlign = TextAlign.Center
-        )
-        Slider(
-            value = value,
-            onValueChange = { onValueChange(it) },
-            valueRange = 0f..1f,
-            steps = 100,
-            modifier = Modifier.weight(1f)
-        )
-    }
-}
 
 
 
 
 @Composable
-fun ColorPicker(initialColor: Color, onColorChanged: (Color) -> Unit) {
-    var color by remember { mutableStateOf(initialColor) }
+fun ColorPicker(lightUi: LightUiState, onColorChanged: (Color) -> Unit) {
+    var color =Color(android.graphics.Color.parseColor(lightUi.lightColor))
 
     val red = remember(color) { color.red * 255 }.toInt()
     val green = remember(color) { color.green * 255 }.toInt()

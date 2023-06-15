@@ -108,7 +108,8 @@ fun fridgeScreen(id: String ,fridgeViewModel: FridgeViewModel = viewModel()) {
                     if(value != fridgeUi.fridgeTemp){
                         fridgeViewModel.setFridgeTemp(value)
                     }
-                }
+                },
+                unit = "°C"
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -122,7 +123,8 @@ fun fridgeScreen(id: String ,fridgeViewModel: FridgeViewModel = viewModel()) {
                     if(value != fridgeUi.fridgeTemp){
                         fridgeViewModel.setFreezerTemp(value)
                     }
-                }
+                },
+                unit = "°C"
             )
 
         }
@@ -209,7 +211,8 @@ fun TemperatureSlider(
     minValue: Int,
     maxValue: Int,
     currentTemperature: Int,
-    onTemperatureChange: (Int) -> Unit
+    onTemperatureChange: (Int) -> Unit,
+    unit: String
 ) {
     Box(
         modifier = Modifier
@@ -235,14 +238,13 @@ fun TemperatureSlider(
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
             Text(
-                text = "$currentTemperature°C",
+                text = "$currentTemperature$unit",
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
         }
     }
-
-
 }
+
 

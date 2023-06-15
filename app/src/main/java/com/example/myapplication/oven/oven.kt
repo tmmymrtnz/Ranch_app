@@ -95,7 +95,8 @@ fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
                     if(value != ovenUi.Oventempeture){
                         ovenViewModel.setTemp(value)
                     }
-                }
+                },
+                unit = "°C"
             )
 
             Spacer(modifier = Modifier.height(16.dp))
