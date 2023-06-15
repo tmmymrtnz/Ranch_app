@@ -1,5 +1,6 @@
 package com.example.myapplication.data.network
 
+import android.util.Log
 import com.example.myapplication.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -13,8 +14,6 @@ object RetrofitClient {
 
     init {
         try{
-            println("API Base URL: ${BuildConfig.API_BASE_URL}")
-
             val httpLoggingInterceptor = HttpLoggingInterceptor()
                 .setLevel(HttpLoggingInterceptor.Level.BODY)
 
@@ -27,12 +26,11 @@ object RetrofitClient {
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build()
+        }catch(e:Exception){
+            Log.d("homehivestatus", "Retrofit Exception : ${e.message}")
         }
-        catch (e: Exception){
-            e.printStackTrace()
-        }
+
     }
 
     fun getApiService() : ApiService? = retrofit?.create(ApiService::class.java)
-
 }

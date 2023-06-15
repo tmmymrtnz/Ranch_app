@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Rancho</string>
+    <string name="fridge">Nevera</string>
+    <string name="speaker">Altavoz</string>
+    <string name="lightBulb">Bombilla</string>
+    <string name="curtain">Cortina</string>
+    <string name="stove">Horno</string>
+    <!-- TODO: Eliminar o cambiar este texto de marcador de posición -->
+    <string name="hello_blank_fragment">Hola fragmento en blanco</string>
+    <string name="mydevices">Mis dispositivos</string>
+    <!-- string de oven -->
+    <string name="convMode">Establecer modo de convección</string>
+    <string name="grillMode">Establecer modo de parrilla</string>
+    <string name="heatMode">Establecer modo de calor</string>
+    <string name="setTemmp">Establecer temperatura</string>
+    <string name="normal">Normal</string>
+    <string name="econmic">Económico</string>
+    <string name="off">Apagado</string>
+    <string name="on">Encendido</string>
+    <string name="complete">Completo</string>
+    <string name="conventional">Convencional</string>
+    <string name="top">Arriba</string>
+    <string name="bottom">Abajo</string>
+    <!-- string de fridege-->
+    <string name="setFTemmp">Establecer temperatura del congelador</string>
+    <string name="Fmode">Modo nevera</string>
+    <string name="defaul">Por defecto</string>
+    <string name="vacation">Vacaciones</string>
+    <string name="party">Fiesta</string>
+    <!-- string de curtain -->
+
+    <!-- string de speaker -->
+
+    <!-- string de lightbulb -->
+    <string name="setB">Establecer brillo</string>
+    <string name="bright">Nivel de brillo</string>
+    <string name="pickColor">Elige color</string>
+    <string name="r">Rojo</string>
+    <string name="g">Verde</string>
+    <string name="b">Azul</string>
+
+    <!-- string de devices -->
+    <string name="devicesHeader">Dispositivos</string>
+</resources>
