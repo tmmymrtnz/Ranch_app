@@ -1,10 +1,11 @@
-package com.example.myapplication
+package com.example.myapplication.routines
+
+import com.example.myapplication.data.network.model.Routines
 
 data class RoutineUiState (
-    val Routines:List<Routine>
+    val routines: Routines? = null,
+    val isLoading: Boolean = false,
+    val message: String? = null
 )
 
-class Routine(
-    val title: String="",
-    val rooms: Map<String, Room>
-)
+val RoutineUiState.hasError: Boolean get() = message != null
