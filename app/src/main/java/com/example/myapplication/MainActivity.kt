@@ -63,6 +63,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.myapplication.blind.BlindScreen
+import com.example.myapplication.blind.BlindViewModel
 import com.example.myapplication.data.network.model.Result
 import com.example.myapplication.devices.DeviceViewModel
 import com.example.myapplication.devices.DevicesScreen
@@ -261,8 +263,15 @@ fun Navigation(navController: NavHostController){
             fdVM.fetchADevice(id)
             fridgeScreen(id = id,fridgeViewModel = fdVM)
         }
-        composable("curtain"){
-           //TODO no esta la screen hecha
+        composable("curtain/{id}",
+            arguments = listOf(
+                navArgument("id"){type = NavType.StringType}
+            )
+            ){ entry ->
+            val id = entry.arguments?.getString("id") ?: "no id"
+            val blVM = BlindViewModel()
+                blVM.fetchADevice(id)
+            BlindScreen(id = id, blindViewModel = blVM)
         }
         composable("speaker"){
             //TODO no esta la screen hecha
@@ -339,7 +348,7 @@ fun RoundedCardComponent(
             "speaker" -> navController.navigate("speaker")
             "oven" -> navController.navigate("oven/$id")
             "lamp" -> navController.navigate("light bulb/$id")
-            "blinds" -> navController.navigate("curtain")
+            "blinds" -> navController.navigate("curtain/$id")
             else -> navController.navigate("home")
         } },
         modifier = Modifier

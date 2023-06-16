@@ -14,4 +14,4 @@ data class LightUiState(
     val device: Device? = null,
 )
 
-val OvenUiState.hasError: Boolean get() = message != null
+val LightUiState.hasError: Boolean get() = message != null

@@ -13,4 +13,4 @@ data class FridgeUiState(
     val device: Device? = null,
 )
 
-val OvenUiState.hasError: Boolean get() = message != null
+val FridgeUiState.hasError: Boolean get() = message != null
