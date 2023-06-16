@@ -1,16 +1,20 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -45,8 +49,10 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -66,58 +72,149 @@ import com.example.myapplication.oven.OvenViewModel
 import com.example.myapplication.routines.RoutinesScreen
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
+
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-    @OptIn(ExperimentalMaterial3Api::class) // , ExperimentalMaterial3WindowSizeClass::class
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val snackbarHostState = remember { SnackbarHostState() }
+            val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+            val isLargeTablet = LocalConfiguration.current.screenWidthDp >= 600  // consider a device with >= 600dp width as a large device.
 
             MyApplicationTheme {
-                val navController = rememberNavController( )
+                val navController = rememberNavController()
                 Scaffold(
-                    snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-                    bottomBar = {
-                        BotNavBar(
-                            items = listOf(
-                                BotNavItem(
-                                    name="Home",
-                                    route= "home",
-                                    icon = painterResource(id = R.drawable.home),
-                                ),
-                                BotNavItem(
-                                    name="Devices",
-                                    route= "devices",
-                                    icon = painterResource(id = R.drawable.devices),
-                                ),
-                                BotNavItem(
-                                    name="Routines",
-                                    route= "routines",
-                                    icon = painterResource(id = R.drawable.clock_outline),
-                                ),
-                                BotNavItem(
-                                    name="Settings",
-                                    route= "settings",
-                                    icon = painterResource(id = R.drawable.cog_outline),
-                                ),
-
-                                ),
-                            navController = navController ,
-                        ) {
-                            navController.navigate(it.route)
-                        }
-                    }
+                    snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
                 ) {
                     Box(Modifier.padding(bottom = it.calculateBottomPadding())) {
-                        Navigation(navController = navController)
+                        if (isLandscape || isLargeTablet) {
+                            Row(Modifier.fillMaxSize()) {
+                                SideNavBar(
+                                    items = listOf(
+                                        BotNavItem(
+                                            name="Home",
+                                            route= "home",
+                                            icon = painterResource(id = R.drawable.home),
+                                        ),
+                                        BotNavItem(
+                                            name="Devices",
+                                            route= "devices",
+                                            icon = painterResource(id = R.drawable.devices),
+                                        ),
+                                        BotNavItem(
+                                            name="Routines",
+                                            route= "routines",
+                                            icon = painterResource(id = R.drawable.clock_outline),
+                                        ),
+                                        BotNavItem(
+                                            name="Settings",
+                                            route= "settings",
+                                            icon = painterResource(id = R.drawable.cog_outline),
+                                        ),
+                                    ),
+                                    navController = navController,
+                                    onItemClick = { navController.navigate(it.route) }
+                                )
+
+                                Box(Modifier.weight(1f)) {
+                                    Navigation(navController = navController)
+                                }
+                            }
+                        } else {
+                            Column(Modifier.fillMaxSize()) {
+                                Box(Modifier.weight(1f)) {
+                                    Navigation(navController = navController)
+                                }
+
+                                BotNavBar(
+                                    items = listOf(
+                                        BotNavItem(
+                                            name="Home",
+                                            route= "home",
+                                            icon = painterResource(id = R.drawable.home),
+                                        ),
+                                        BotNavItem(
+                                            name="Devices",
+                                            route= "devices",
+                                            icon = painterResource(id = R.drawable.devices),
+                                        ),
+                                        BotNavItem(
+                                            name="Routines",
+                                            route= "routines",
+                                            icon = painterResource(id = R.drawable.clock_outline),
+                                        ),
+                                        BotNavItem(
+                                            name="Settings",
+                                            route= "settings",
+                                            icon = painterResource(id = R.drawable.cog_outline),
+                                        ),
+                                    ),
+                                    navController = navController,
+                                    onItemClick = { navController.navigate(it.route) }
+                                )
+                            }
+                        }
                     }
                 }
             }
         }
     }
-
 }
+
+//class MainActivity : ComponentActivity() {
+//    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+//    @OptIn(ExperimentalMaterial3Api::class) // , ExperimentalMaterial3WindowSizeClass::class
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContent {
+//            val snackbarHostState = remember { SnackbarHostState() }
+//
+//            MyApplicationTheme {
+//                val navController = rememberNavController( )
+//                Scaffold(
+//                    snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+//                    bottomBar = {
+//                        BotNavBar(
+//                            items = listOf(
+//                                BotNavItem(
+//                                    name="Home",
+//                                    route= "home",
+//                                    icon = painterResource(id = R.drawable.home),
+//                                ),
+//                                BotNavItem(
+//                                    name="Devices",
+//                                    route= "devices",
+//                                    icon = painterResource(id = R.drawable.devices),
+//                                ),
+//                                BotNavItem(
+//                                    name="Routines",
+//                                    route= "routines",
+//                                    icon = painterResource(id = R.drawable.clock_outline),
+//                                ),
+//                                BotNavItem(
+//                                    name="Settings",
+//                                    route= "settings",
+//                                    icon = painterResource(id = R.drawable.cog_outline),
+//                                ),
+//
+//                                ),
+//                            navController = navController ,
+//                        ) {
+//                            navController.navigate(it.route)
+//                        }
+//                    }
+//                ) {
+//                    Box(Modifier.padding(bottom = it.calculateBottomPadding())) {
+//                        Navigation(navController = navController)
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//}
 
 @Composable
 fun Navigation(navController: NavHostController){
@@ -350,21 +447,78 @@ fun MyScreenComponent(
                     }
                 }
             }
-//            LazyColumn(
-//                horizontalAlignment = Alignment.CenterHorizontally,
-//                modifier = Modifier.fillMaxWidth()
-//            ){
-//                items(items = cardList){item ->
-//                    RoundedCardComponent(
-//                        title = item.title,
-//                        icon = item.icon,
-//                        navController =  navController
-//                    )
-//                    Spacer(modifier = Modifier.height(8.dp))
-//                }
-//            }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SideNavBar(
+    items: List<BotNavItem>,
+    navController: NavController,
+    onItemClick: (BotNavItem) -> Unit
+) {
+    val backStackEntry = navController.currentBackStackEntryAsState()
+    val selectedColor = MaterialTheme.colorScheme.tertiary
+    val unselectedColor = MaterialTheme.colorScheme.tertiary
+
+    Column(
+        modifier = Modifier
+            .width(100.dp)
+            .fillMaxHeight()
+            .background(Color.White)
+    ) {
+        items.forEach { item ->
+            val selected = item.route == backStackEntry.value?.destination?.route
+
+            val itemColor = if (selected) Color.White else unselectedColor
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onItemClick(item) }
+                    .padding(horizontal = 8.dp, vertical = 12.dp)
+                    .background(
+                        if (selected) selectedColor else Color.Transparent,
+                        shape = RoundedCornerShape(12.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    if (item.badgeCount > 0) {
+                        BadgedBox(
+                            badge = { Badge { Text(item.badgeCount.toString()) } },
+                            modifier = Modifier.padding(4.dp)
+                        ) {
+                            Icon(
+                                painter = item.icon,
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp),
+                                tint = itemColor
+                            )
+                        }
+                    } else {
+                        Icon(
+                            painter = item.icon,
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp),
+                            tint = itemColor
+                        )
+                    }
+                    if (selected) {
+                        Text(
+                            text = item.name,
+                            color = itemColor,
+                            style = MaterialTheme.typography.headlineSmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}
 
