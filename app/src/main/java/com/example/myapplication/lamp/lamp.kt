@@ -74,7 +74,7 @@ fun LightBulbScreen(id : String ,lightViewModel: LightViewModel = viewModel()) {
                 Text(
                     text = stringResource(id = R.string.lightBulb),
                     style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = MaterialTheme.colorScheme.scrim,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
@@ -127,7 +127,7 @@ fun SwitchWithLabels(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(horizontal = 16.dp)
     ) {
-        Text(text = labelOff, color = MaterialTheme.colorScheme.secondary)
+        Text(text = labelOff, color = MaterialTheme.colorScheme.scrim)
         Spacer(modifier = Modifier.width(8.dp))
         Switch(
             checked = checked,
@@ -135,7 +135,7 @@ fun SwitchWithLabels(
             modifier = Modifier.padding(vertical = 8.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = labelOn, color = MaterialTheme.colorScheme.secondary)
+        Text(text = labelOn, color = MaterialTheme.colorScheme.scrim)
     }
 }
 @Composable
@@ -185,7 +185,7 @@ fun ColorPicker(lightUi: LightUiState, onColorChanged: (Color) -> Unit) {
             Text(
                 text = stringResource(id = R.string.pickColor),
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.scrim,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -227,7 +227,7 @@ fun LabeledSlider(
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.secondary
+            color = MaterialTheme.colorScheme.scrim
         )
         Slider(
             value = value,

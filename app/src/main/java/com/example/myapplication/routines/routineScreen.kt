@@ -76,7 +76,7 @@ fun RoutinesScreen(
                     Text(
                         text = stringResource(id = R.string.routinesHeader),
                         style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.secondary,
+                        color = MaterialTheme.colorScheme.scrim,
                         modifier = Modifier.padding(16.dp)
                     )
                 }
@@ -125,7 +125,7 @@ fun RoutineCardComponent(routineViewModel: RoutineViewModel,
                     style = TextStyle(
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.secondary
+                        color = MaterialTheme.colorScheme.scrim
                     ),
                     modifier = Modifier.weight(1f)
                 )
@@ -148,7 +148,7 @@ fun RoutineCardComponent(routineViewModel: RoutineViewModel,
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.secondary
+                        color = MaterialTheme.colorScheme.scrim
                     ),
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
@@ -158,7 +158,7 @@ fun RoutineCardComponent(routineViewModel: RoutineViewModel,
                         text = "- ${device.deviceName} ${device.actionName}",
                         style = TextStyle(
                             fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.secondary
+                            color = MaterialTheme.colorScheme.scrim
                         ),
                         modifier = Modifier.padding(start = 16.dp, bottom = 4.dp)
                     )

@@ -372,7 +372,7 @@ fun RoundedCardComponent(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.secondary
+                    color = MaterialTheme.colorScheme.scrim
                 )
 
             }
@@ -413,7 +413,7 @@ fun MyScreenComponent(
                 Text(
                     text = stringResource(id = R.string.app_name),
                     style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = MaterialTheme.colorScheme.scrim,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
@@ -430,7 +430,7 @@ fun MyScreenComponent(
                         Text(
                             text = room ?: "Not in room",
                             style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.secondary,
+                            color = MaterialTheme.colorScheme.scrim,
                             modifier = Modifier.padding(start = 8.dp)
                         )
                         Divider(color = MaterialTheme.colorScheme.secondary)

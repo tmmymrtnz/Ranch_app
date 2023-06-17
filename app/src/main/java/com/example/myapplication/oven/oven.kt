@@ -65,7 +65,7 @@ fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
                 Text(
                     text =   ovenUi.device?.result?.name.toString(), //stringResource(id = R.string.stove),
                     style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = MaterialTheme.colorScheme.scrim,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }

@@ -60,7 +60,7 @@ fun BlindScreen(id: String, blindViewModel: BlindViewModel = viewModel()) {
                 Text(
                     text = "Blind",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = MaterialTheme.colorScheme.scrim,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
@@ -112,7 +112,7 @@ fun SwitchWithLabelsTogable(
 ) {
     val changingState = blindUi.device?.result?.state?.status.toString().equals("opened") || blindUi.device?.result?.state?.status.toString().equals("closed")
     val textColor = if (changingState) {
-        MaterialTheme.colorScheme.secondary
+        MaterialTheme.colorScheme.scrim
     } else {
         Color.DarkGray
     }

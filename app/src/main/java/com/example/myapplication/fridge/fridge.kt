@@ -72,7 +72,7 @@ fun fridgeScreen(id: String ,fridgeViewModel: FridgeViewModel = viewModel()) {
                 Text(
                     text = stringResource(id = R.string.fridge),
                     style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = MaterialTheme.colorScheme.scrim,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
@@ -159,7 +159,7 @@ fun ModeSelector(
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.scrim,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -188,7 +188,7 @@ fun FridgeModeButton(
     onModeSelected: (String) -> Unit
 ) {
     val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
-    val textColor = if (isSelected) MaterialTheme.colorScheme.secondary else Color.Gray
+    val textColor = if (isSelected) MaterialTheme.colorScheme.scrim else Color.Gray
 
     Button(
         onClick = { onModeSelected(mode) },
@@ -223,7 +223,7 @@ fun TemperatureSlider(
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.scrim,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -241,7 +241,7 @@ fun TemperatureSlider(
             Text(
                 text = "$currentTemperature$unit",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.scrim,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
         }

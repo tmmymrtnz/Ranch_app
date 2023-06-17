@@ -107,7 +107,7 @@ fun CardItem(text: String, icon: ImageVector, backgroundColor: Color) {
                 text = text,
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                 modifier = Modifier.padding(vertical = 16.dp),
-                color = MaterialTheme.colorScheme.secondary
+                color = MaterialTheme.colorScheme.scrim
             )
         }
     }

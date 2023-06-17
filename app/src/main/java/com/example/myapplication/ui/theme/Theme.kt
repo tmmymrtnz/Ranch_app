@@ -22,13 +22,16 @@ private val DarkColorScheme = darkColorScheme(
     secondary = Color.White,
     tertiary = Blue100,
     background = Blue70,
+    scrim = Color.White  //lo uso como color del texto
+
 )
 
 private val LightColorScheme = lightColorScheme(
     primary =  Blue50,
     secondary = Blue100,
-    tertiary = Blue50,
-    background = Color.White
+    tertiary = Blue70,
+    background = Color.White,
+    scrim = Color.Black  //lo uso como color del texto
 
 
     /* Other default colors to override
