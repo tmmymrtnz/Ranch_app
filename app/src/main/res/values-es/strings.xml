@@ -42,4 +42,7 @@
 
     <!-- string de devices -->
     <string name="devicesHeader">Dispositivos</string>
+
+    <!-- string de routines -->
+    <string name="routinesHeader">Mis Rutinas</string>
 </resources>
