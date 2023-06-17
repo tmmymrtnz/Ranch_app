@@ -37,12 +37,7 @@ import com.example.myapplication.ui.theme.MyApplicationTheme
 fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
 
     val ovenUi by ovenViewModel.uiState.collectAsState()
-
     ovenViewModel.setId(id)
-
-    LaunchedEffect(Unit){
-       ovenViewModel.fetchADevice(id)
-    }
 
 
     Box(

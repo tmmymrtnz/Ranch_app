@@ -40,17 +40,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.lamp.LightUiState
 import com.example.myapplication.lamp.LightViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import kotlinx.coroutines.delay
 
 @Composable
 fun LightBulbScreen(id : String ,lightViewModel: LightViewModel = viewModel()) {
 
     val lightUi by lightViewModel.uiState.collectAsState()
-
     lightViewModel.setId(id)
 
-    LaunchedEffect(Unit){
-        lightViewModel.fetchADevice(id)
-    }
 
     Box(
         modifier = Modifier
@@ -90,7 +87,6 @@ fun LightBulbScreen(id : String ,lightViewModel: LightViewModel = viewModel()) {
                 labelOff = stringResource(id = R.string.off)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Log.d("xdddd", lightUi.lightColor)
             // Color Picker
             ColorPicker(lightUi = lightUi){
                 color ->  lightViewModel.changeColor(color)
@@ -140,7 +136,16 @@ fun SwitchWithLabels(
         Text(text = labelOn, color = Color.White)
     }
 }
-
+@Composable
+fun RepeatedFunctionCall(intervalMillis: Long,lightViewModel: LightViewModel = viewModel()) {
+    LaunchedEffect(Unit) {
+        while (true) {
+            // Call your function here
+            println("Function called at ${System.currentTimeMillis()}")
+            delay(intervalMillis)
+        }
+    }
+}
 
 
 @Preview
@@ -150,11 +155,6 @@ fun PreviewSwitchWithLabels() {
         LightBulbScreen("xd")
     }
 }
-
-
-
-
-
 
 
 

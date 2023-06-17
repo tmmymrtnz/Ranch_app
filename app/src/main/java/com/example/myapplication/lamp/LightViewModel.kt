@@ -1,5 +1,6 @@
 package com.example.myapplication.lamp
 
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.network.RetrofitClient
 import com.example.myapplication.lamp.LightUiState
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,12 +21,25 @@ class LightViewModel : ViewModel() {
 
     private var fetchJob: Job? = null
 
-
     private var lampId: String = "no id"
 
     fun setId(id: String) {
         lampId = id
     }
+
+    init {
+        polling()
+    }
+
+    private fun polling() {
+        viewModelScope.launch {
+            while (true) {
+                delay(1000L) // Delay for 1 second
+                fetchADevice(lampId)
+            }
+        }
+    }
+
     fun fetchADevice(id: String){
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
@@ -34,8 +49,8 @@ class LightViewModel : ViewModel() {
                     RetrofitClient.getApiService()?.getADevice(id)
                         ?: throw Exception("API Service is null")
                 }.onSuccess { response ->
-                    _uiState.update {
-                        it.copy(
+                    _uiState.update { currentState ->
+                        currentState.copy(
                             lightOn= response.body()?.result?.state?.status.equals("on"),
                             brightness = response.body()?.result?.state?.brightness ?: 0,
                             lightColor = "#FF" + response.body()?.result?.state?.color.toString(),

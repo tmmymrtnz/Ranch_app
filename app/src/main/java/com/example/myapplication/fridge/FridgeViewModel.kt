@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.network.RetrofitClient
 import com.example.myapplication.fridge.FridgeUiState
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,6 +24,21 @@ class FridgeViewModel : ViewModel(){
 
     fun setId(id: String) {
         fridgeId = id
+    }
+
+
+
+    init {
+        polling()
+    }
+
+    private fun polling() {
+        viewModelScope.launch {
+            while (true) {
+                delay(1000L) // Delay for 1 second
+                fetchADevice(fridgeId)
+            }
+        }
     }
     fun dismissMessage() {
         _uiState.update { it.copy(message = null) }

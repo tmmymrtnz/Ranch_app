@@ -45,9 +45,6 @@ fun fridgeScreen(id: String ,fridgeViewModel: FridgeViewModel = viewModel()) {
 
     fridgeViewModel.setId(id)
 
-    LaunchedEffect(Unit){
-        fridgeViewModel.fetchADevice(id)
-    }
 
     Box(
         modifier = Modifier

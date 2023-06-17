@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.network.RetrofitClient
 import com.example.myapplication.data.network.model.Device
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,6 +22,19 @@ class OvenViewModel : ViewModel() {
 
     fun setId(id: String) {
         ovenId = id
+    }
+
+    init {
+        polling()
+    }
+
+    private fun polling() {
+        viewModelScope.launch {
+            while (true) {
+                delay(1000L) // Delay for 1 second
+                fetchADevice(ovenId)
+            }
+        }
     }
 
     fun dismissMessage() {
