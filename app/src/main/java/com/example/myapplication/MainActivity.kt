@@ -218,6 +218,7 @@ class MainActivity : ComponentActivity() {
 //
 //}
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun Navigation(navController: NavHostController){
 
@@ -270,7 +271,7 @@ fun Navigation(navController: NavHostController){
             ){ entry ->
             val id = entry.arguments?.getString("id") ?: "no id"
             val blVM = BlindViewModel()
-                blVM.fetchADevice(id)
+            blVM.fetchADevice(id)
             BlindScreen(id = id, blindViewModel = blVM)
         }
         composable("speaker"){
