@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,20 +23,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
-import com.example.myapplication.SwitchWithLabels
 import com.example.myapplication.TemperatureSlider
-import com.example.myapplication.blind.BlindViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 @Composable
 fun BlindScreen(id: String, blindViewModel: BlindViewModel = viewModel()) {
 
     val blindUi by blindViewModel.uiState.collectAsState()
+    blindViewModel.setId(id)
 
     Box(
         modifier = Modifier
@@ -66,13 +66,14 @@ fun BlindScreen(id: String, blindViewModel: BlindViewModel = viewModel()) {
             Spacer(modifier = Modifier.height(8.dp))
             Divider(color = Color.White)
 
-            SwitchWithLabels(
+            SwitchWithLabelsTogable(
                 checked = blindUi.blindOn,
                 onCheckedChange = { checked ->
                     blindViewModel.switchBlind(checked)
                 },
-                labelOn = stringResource(id = R.string.on),
-                labelOff = stringResource(id = R.string.off)
+                labelOn = "Open",
+                labelOff = "Close",
+                blindUi = blindUi
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -98,6 +99,37 @@ fun BlindScreen(id: String, blindViewModel: BlindViewModel = viewModel()) {
     }
 }
 
+
+@Composable
+fun SwitchWithLabelsTogable(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    labelOn: String,
+    labelOff: String,
+    blindUi: BlindUiState
+) {
+    val changingState = blindUi.device?.result?.state?.status.toString().equals("opened") || blindUi.device?.result?.state?.status.toString().equals("closed")
+    val textColor = if (changingState) {
+        Color.White
+    } else {
+        Color.DarkGray
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) {
+        Text(text = labelOff, color = textColor)
+        Spacer(modifier = Modifier.width(8.dp))
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            modifier = Modifier.padding(vertical = 8.dp),
+            enabled = changingState
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = labelOn, color = textColor)
+    }
+}
 
 @Preview
 @Composable

@@ -9,7 +9,7 @@ data class BlindUiState (
     val device: Device? = null,
 
     val blindOn: Boolean = false,
-    val isChangingStatus: Boolean = false,
+    val status: String = "closed",
     val blindLevel: Int = 0 /* pertenece al intervalo [0,100] */
 
 )

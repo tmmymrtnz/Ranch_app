@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.network.RetrofitClient
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,6 +23,19 @@ class BlindViewModel : ViewModel() {
         blindId = id
     }
 
+    init {
+        polling()
+    }
+
+    private fun polling() {
+        viewModelScope.launch {
+            while (true) {
+                delay(500L) // Delay for 1 second
+                fetchADevice(blindId)
+            }
+        }
+    }
+
     fun fetchADevice(id: String){
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
@@ -34,7 +48,7 @@ class BlindViewModel : ViewModel() {
                     _uiState.update {
                         it.copy(
                             device = response.body(),
-                            blindOn = response.body()?.result?.state?.status.equals("on"),
+                            blindOn = response.body()?.result?.state?.status.equals("opened"),
                             blindLevel = response.body()?.result?.state?.level ?:0,
                             isLoading = false
                         )
@@ -111,8 +125,11 @@ class BlindViewModel : ViewModel() {
         }
     }
 
-
     fun switchBlind(state: Boolean) {
+        if(!state)
+            doAction(blindId, "close", listOf())
+        else
+            doAction(blindId, "open", listOf())
         _uiState.update { currentState -> currentState.copy(blindOn = state)}
     }
 
