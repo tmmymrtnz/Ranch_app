@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,17 +59,18 @@ fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
                 Image(
                     painter = painterResource(R.drawable.stove),
                     contentDescription = null,
-                    modifier = Modifier.size(88.dp)
+                    modifier = Modifier.size(88.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
                 )
                 Text(
                     text =   ovenUi.device?.result?.name.toString(), //stringResource(id = R.string.stove),
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Divider(color = Color.White)
+            Divider(color = MaterialTheme.colorScheme.secondary)
 
             SwitchWithLabels(
                 checked = ovenUi.OvenOn,

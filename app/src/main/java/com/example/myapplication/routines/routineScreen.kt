@@ -1,17 +1,21 @@
 package com.example.myapplication.routines
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -56,12 +61,28 @@ fun RoutinesScreen(
                 .padding(16.dp)
         ) {
             Column {
-                Text(
-                    text = stringResource(id = R.string.routinesHeader),
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
-                    modifier = Modifier.padding(16.dp)
-                )
+
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.clock_outline),
+                        contentDescription = null,
+                        modifier = Modifier.size(88.dp),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.routinesHeader),
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Divider(color = MaterialTheme.colorScheme.secondary)
+
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(minSize = 170.dp)
                 ) {
@@ -104,7 +125,7 @@ fun RoutineCardComponent(routineViewModel: RoutineViewModel,
                     style = TextStyle(
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.secondary
                     ),
                     modifier = Modifier.weight(1f)
                 )
@@ -115,7 +136,7 @@ fun RoutineCardComponent(routineViewModel: RoutineViewModel,
                     Icon(
                         painter = painterResource(R.drawable.play_circle),
                         contentDescription = "Play Button",
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.size(24.dp)
                     )
                 }
@@ -127,7 +148,7 @@ fun RoutineCardComponent(routineViewModel: RoutineViewModel,
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.secondary
                     ),
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
@@ -137,7 +158,7 @@ fun RoutineCardComponent(routineViewModel: RoutineViewModel,
                         text = "- ${device.deviceName} ${device.actionName}",
                         style = TextStyle(
                             fontSize = 14.sp,
-                            color = Color.White
+                            color = MaterialTheme.colorScheme.secondary
                         ),
                         modifier = Modifier.padding(start = 16.dp, bottom = 4.dp)
                     )

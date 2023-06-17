@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -67,17 +68,18 @@ fun LightBulbScreen(id : String ,lightViewModel: LightViewModel = viewModel()) {
                 Image(
                     painter = painterResource(R.drawable.lightbulb),
                     contentDescription = null,
-                    modifier = Modifier.size(88.dp)
+                    modifier = Modifier.size(88.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
                 )
                 Text(
                     text = stringResource(id = R.string.lightBulb),
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Divider(color = Color.White)
+            Divider(color = MaterialTheme.colorScheme.secondary)
             SwitchWithLabels(
                 checked = lightUi.lightOn,
                 onCheckedChange = { checked ->
@@ -125,7 +127,7 @@ fun SwitchWithLabels(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(horizontal = 16.dp)
     ) {
-        Text(text = labelOff, color = Color.White)
+        Text(text = labelOff, color = MaterialTheme.colorScheme.secondary)
         Spacer(modifier = Modifier.width(8.dp))
         Switch(
             checked = checked,
@@ -133,7 +135,7 @@ fun SwitchWithLabels(
             modifier = Modifier.padding(vertical = 8.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = labelOn, color = Color.White)
+        Text(text = labelOn, color = MaterialTheme.colorScheme.secondary)
     }
 }
 @Composable
@@ -183,7 +185,7 @@ fun ColorPicker(lightUi: LightUiState, onColorChanged: (Color) -> Unit) {
             Text(
                 text = stringResource(id = R.string.pickColor),
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.secondary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -225,7 +227,7 @@ fun LabeledSlider(
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.White
+            color = MaterialTheme.colorScheme.secondary
         )
         Slider(
             value = value,

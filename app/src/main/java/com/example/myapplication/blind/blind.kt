@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,18 +54,19 @@ fun BlindScreen(id: String, blindViewModel: BlindViewModel = viewModel()) {
                 Image(
                     painter = painterResource(R.drawable.curtains),
                     contentDescription = null,
-                    modifier = Modifier.size(88.dp)
+                    modifier = Modifier.size(88.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
                 )
                 Text(
                     text = "Blind",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-            Divider(color = Color.White)
+            Divider(color = MaterialTheme.colorScheme.secondary)
 
             SwitchWithLabelsTogable(
                 checked = blindUi.blindOn,
@@ -110,7 +112,7 @@ fun SwitchWithLabelsTogable(
 ) {
     val changingState = blindUi.device?.result?.state?.status.toString().equals("opened") || blindUi.device?.result?.state?.status.toString().equals("closed")
     val textColor = if (changingState) {
-        Color.White
+        MaterialTheme.colorScheme.secondary
     } else {
         Color.DarkGray
     }

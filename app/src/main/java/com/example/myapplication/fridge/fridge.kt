@@ -21,6 +21,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -64,17 +66,18 @@ fun fridgeScreen(id: String ,fridgeViewModel: FridgeViewModel = viewModel()) {
                 Image(
                     painter = painterResource(R.drawable.fridge),
                     contentDescription = null,
-                    modifier = Modifier.size(88.dp)
+                    modifier = Modifier.size(88.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
                 )
                 Text(
                     text = stringResource(id = R.string.fridge),
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Divider(color = Color.White)
+            Divider(color = MaterialTheme.colorScheme.secondary)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -156,7 +159,7 @@ fun ModeSelector(
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.secondary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -185,7 +188,7 @@ fun FridgeModeButton(
     onModeSelected: (String) -> Unit
 ) {
     val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
-    val textColor = if (isSelected) Color.White else Color.Gray
+    val textColor = if (isSelected) MaterialTheme.colorScheme.secondary else Color.Gray
 
     Button(
         onClick = { onModeSelected(mode) },
@@ -220,7 +223,7 @@ fun TemperatureSlider(
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -232,12 +235,13 @@ fun TemperatureSlider(
                 valueRange = minValue.toFloat()..maxValue.toFloat(),
                 onValueChangeFinished = null,
                 steps = 100,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp),
+
             )
             Text(
                 text = "$currentTemperature$unit",
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
         }

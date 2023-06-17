@@ -291,7 +291,7 @@ fun BotNavBar(
     val backStackEntry = navController.currentBackStackEntryAsState()
     NavigationBar(
 
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.secondary
     ){
       items.forEach{
           item ->
@@ -300,7 +300,7 @@ fun BotNavBar(
           selected = selected,
           onClick = {onItemClick(item)},
               colors = NavigationBarItemDefaults.colors(
-                  selectedIconColor = Color.White,
+                  selectedIconColor = MaterialTheme.colorScheme.secondary,
                   unselectedIconColor = MaterialTheme.colorScheme.tertiary,
                   indicatorColor = MaterialTheme.colorScheme.tertiary
               ),
@@ -360,7 +360,7 @@ fun RoundedCardComponent(
     ) {
 
             Row(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -372,7 +372,7 @@ fun RoundedCardComponent(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.headlineSmall,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.secondary
                 )
 
             }
@@ -413,12 +413,12 @@ fun MyScreenComponent(
                 Text(
                     text = stringResource(id = R.string.app_name),
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Divider(color = Color.White)
+            Divider(color = MaterialTheme.colorScheme.secondary)
             Spacer(modifier = Modifier.height(8.dp))
             val groupedDevices = uiState.devices?.result?.groupBy { it.room?.name }
             LazyColumn(
@@ -428,12 +428,13 @@ fun MyScreenComponent(
                 groupedDevices?.forEach { (room, devices) ->
                     item {
                         Text(
-                            text = room ?: "",
+                            text = room ?: "Not in room",
                             style = MaterialTheme.typography.headlineSmall,
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.secondary,
                             modifier = Modifier.padding(start = 8.dp)
                         )
-
+                        Divider(color = MaterialTheme.colorScheme.secondary)
+                        Spacer(modifier = Modifier.height(8.dp))
                         LazyRow {
                             items(items = devices){device ->
                                 RoundedCardComponent(
@@ -476,12 +477,12 @@ fun SideNavBar(
         modifier = Modifier
             .width(100.dp)
             .fillMaxHeight()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.secondary)
     ) {
         items.forEach { item ->
             val selected = item.route == backStackEntry.value?.destination?.route
 
-            val itemColor = if (selected) Color.White else unselectedColor
+            val itemColor = if (selected) MaterialTheme.colorScheme.secondary else unselectedColor
 
             Box(
                 modifier = Modifier
