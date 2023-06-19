@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.compose.ui.platform.LocalContext
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -25,22 +26,24 @@ class EventService : Service() {
 
     private lateinit var job: Job
 
+
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG,"starting service...")
-        val context = applicationContext ;
+        val context = applicationContext
 
         job = GlobalScope.launch(Dispatchers.IO) {
             while (true){
                 val eventList = fetchEvents()
 
                 eventList?.forEach {
-                    Log.d(TAG, "Broadcasting send notification intent (${it.deviceId})")
-                    if(
-                              !intent?.getStringExtra(MyIntent.DEVICE_ID).equals(it.deviceId) &&
-                              it.deviceId != MyIntent.DEVICE_ID
-                    ){
-                        sendCustomNotification(context, it.deviceId, it.args.toString())
+
+                    val intent2 = Intent().apply {
+                        action = MyIntent.SHOW_NOTIFICATION
+                        `package` = MyIntent.PACKAGE
+                        putExtra(MyIntent.DEVICE_ID, it.deviceId)
                     }
+                    sendOrderedBroadcast(intent2, null)
 
                 }
                 delay(DELAY_MILIS)

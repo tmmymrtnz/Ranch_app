@@ -2,6 +2,7 @@ package com.example.myapplication
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -43,6 +44,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -78,12 +80,9 @@ import com.example.myapplication.ui.theme.MyApplicationTheme
 
 
 class MainActivity : ComponentActivity() {
+    private lateinit var receiver: SkipNotificationReceiver
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
-        createNotificationChannel(this)
-
-        val intent = Intent(this, EventService::class.java)
-        startService(intent)
 
         super.onCreate(savedInstanceState)
         setContent {
@@ -169,60 +168,22 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+    override fun onResume() {
+        MyIntent.notif = true
+        receiver = SkipNotificationReceiver( notif = MyIntent.notif )
+        IntentFilter(MyIntent.SHOW_NOTIFICATION)
+            .apply { priority = 1 }
+            .also { registerReceiver(receiver, it) }
+        super.onResume()
+    }
+    override fun onStop() {
+        super.onStop()
+        MyIntent.notif = false
+        unregisterReceiver(receiver)
+    }
+
 }
 
-//class MainActivity : ComponentActivity() {
-//    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-//    @OptIn(ExperimentalMaterial3Api::class) // , ExperimentalMaterial3WindowSizeClass::class
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContent {
-//            val snackbarHostState = remember { SnackbarHostState() }
-//
-//            MyApplicationTheme {
-//                val navController = rememberNavController( )
-//                Scaffold(
-//                    snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-//                    bottomBar = {
-//                        BotNavBar(
-//                            items = listOf(
-//                                BotNavItem(
-//                                    name="Home",
-//                                    route= "home",
-//                                    icon = painterResource(id = R.drawable.home),
-//                                ),
-//                                BotNavItem(
-//                                    name="Devices",
-//                                    route= "devices",
-//                                    icon = painterResource(id = R.drawable.devices),
-//                                ),
-//                                BotNavItem(
-//                                    name="Routines",
-//                                    route= "routines",
-//                                    icon = painterResource(id = R.drawable.clock_outline),
-//                                ),
-//                                BotNavItem(
-//                                    name="Settings",
-//                                    route= "settings",
-//                                    icon = painterResource(id = R.drawable.cog_outline),
-//                                ),
-//
-//                                ),
-//                            navController = navController ,
-//                        ) {
-//                            navController.navigate(it.route)
-//                        }
-//                    }
-//                ) {
-//                    Box(Modifier.padding(bottom = it.calculateBottomPadding())) {
-//                        Navigation(navController = navController)
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//}
 
 @SuppressLint("SuspiciousIndentation")
 @Composable

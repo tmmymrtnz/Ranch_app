@@ -58,7 +58,7 @@ fun BlindScreen(id: String, blindViewModel: BlindViewModel = viewModel()) {
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
                 )
                 Text(
-                    text = "Blind",
+                    text = blindUi.device?.result?.name.toString(),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.scrim,
                     modifier = Modifier.padding(start = 8.dp)

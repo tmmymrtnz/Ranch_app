@@ -72,7 +72,7 @@ fun LightBulbScreen(id : String ,lightViewModel: LightViewModel = viewModel()) {
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
                 )
                 Text(
-                    text = stringResource(id = R.string.lightBulb),
+                    text = lightUi.device?.result?.name.toString(),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.scrim,
                     modifier = Modifier.padding(start = 8.dp)

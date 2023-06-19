@@ -70,7 +70,7 @@ fun fridgeScreen(id: String ,fridgeViewModel: FridgeViewModel = viewModel()) {
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
                 )
                 Text(
-                    text = stringResource(id = R.string.fridge),
+                    text = fridgeUi.device?.result?.name.toString(),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.scrim,
                     modifier = Modifier.padding(start = 8.dp)

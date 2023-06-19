@@ -172,7 +172,6 @@ fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
                     }
                 }
             )
-
             Spacer(modifier = Modifier.height(16.dp))
             val Hmodes = listOf(
                 stringResource(id = R.string.conventional),
