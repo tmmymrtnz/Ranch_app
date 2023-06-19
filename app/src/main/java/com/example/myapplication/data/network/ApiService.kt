@@ -5,6 +5,7 @@ import com.example.myapplication.data.network.model.DeviceList
 import com.example.myapplication.data.network.model.DeviceTypesList
 import com.example.myapplication.data.network.model.Routines
 import com.example.myapplication.data.network.model.RoutinesResult
+import com.example.myapplication.data.network.model.SongAux
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -38,4 +39,7 @@ interface ApiService {
 
     @PUT("routines/{id}/execute/")
     suspend fun executeRoutine(@Path("id")id: String): Response<RoutinesResult>
+
+    @PUT("/api/devices/{id}/{action}")
+    suspend fun getPlaylist(@Path("id") id: String, @Path("action") action: String) : Response<ArrayList<SongAux>>
 }

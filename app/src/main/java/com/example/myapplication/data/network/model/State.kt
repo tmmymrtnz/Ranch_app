@@ -17,6 +17,6 @@ data class State (
     @SerializedName("volume"             ) var volume : Int?    = null,
     @SerializedName("genre"              ) var genre  : String? = null,
     @SerializedName("color"              ) var color      : String? = null,
-    @SerializedName("brightness"         ) var brightness : Int?    = null
-
+    @SerializedName("brightness"         ) var brightness : Int?    = null,
+    @SerializedName("song"               ) var song: SongAux? = null
 )
