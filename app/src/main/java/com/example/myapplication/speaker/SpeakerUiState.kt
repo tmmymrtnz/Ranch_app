@@ -40,9 +40,9 @@ data class SpeakerUiState(
 
 data class SpeakerIcons(
     val speaker: Int = R.drawable.speaker,
-    val prev: Int = R.drawable.ic_previous,
-    val play: Int = R.drawable.ic_play,
-    val next: Int = R.drawable.ic_next,
+    val prev: Int = R.drawable.skip_previous,
+    val play: Int = R.drawable.play,
+    val next: Int = R.drawable.skip_next,
 
 )
 

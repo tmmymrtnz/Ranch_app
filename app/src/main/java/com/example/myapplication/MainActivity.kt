@@ -72,6 +72,8 @@ import com.example.myapplication.fridge.FridgeViewModel
 import com.example.myapplication.lamp.LightViewModel
 import com.example.myapplication.oven.OvenViewModel
 import com.example.myapplication.routines.RoutinesScreen
+import com.example.myapplication.speaker.SpeakerViewModel
+import com.example.myapplication.speaker.speakerScreen
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 
@@ -278,8 +280,15 @@ fun Navigation(navController: NavHostController){
             blVM.fetchADevice(id)
             BlindScreen(id = id, blindViewModel = blVM)
         }
-        composable("speaker"){
-            //TODO no esta la screen hecha
+        composable("speaker/{id}",
+            arguments = listOf(
+                navArgument("id"){type = NavType.StringType}
+            )
+        ){entry ->
+            val id = entry.arguments?.getString("id") ?: "no id"
+            val spVM = SpeakerViewModel()
+            spVM.fetchADevice(id)
+            speakerScreen(id, spVM)
         }
 
     }
@@ -350,7 +359,7 @@ fun RoundedCardComponent(
         val id:String =result.id.toString()
         when (result.type?.name.toString()) {
             "refrigerator" -> navController.navigate("fridge/$id")
-            "speaker" -> navController.navigate("speaker")
+            "speaker" -> navController.navigate("speaker/$id")
             "oven" -> navController.navigate("oven/$id")
             "lamp" -> navController.navigate("light bulb/$id")
             "blinds" -> navController.navigate("curtain/$id")
