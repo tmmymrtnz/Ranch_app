@@ -86,13 +86,34 @@ fun fridgeScreen(id: String ,fridgeViewModel: FridgeViewModel = viewModel()) {
                 stringResource(id = R.string.vacation),
                 stringResource(id = R.string.party))
 
+            val transalteModes= when(fridgeUi.selectedFridgeMode){
+                "default"-> stringResource(id = R.string.defaul)
+                "vacation"->stringResource(id = R.string.vacation)
+                "party"-> stringResource(id = R.string.party)
+                else->""
+            }
+
             ModeSelector(
                 title = stringResource(id = R.string.Fmode),
-                selectedMode = fridgeUi.selectedFridgeMode,
+                selectedMode = transalteModes,
                 modes = modes,
                 onModeSelected = { mode ->
-                    if(mode !=fridgeUi.selectedFridgeMode ){
-                        fridgeViewModel.changeMode(mode)
+                    if(mode !=transalteModes ){
+                        when (mode) {
+                            modes[0] -> {
+                                fridgeViewModel.changeMode("default")
+                            }
+                            modes[1] -> {
+                                fridgeViewModel.changeMode("vacation")
+                            }
+                            modes[2]-> {
+                                fridgeViewModel.changeMode("party")
+                            }
+                            else -> {
+                                // Handle other cases
+                            }
+                        }
+
                     }
                 }
             )

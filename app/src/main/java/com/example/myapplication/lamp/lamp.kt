@@ -85,8 +85,8 @@ fun LightBulbScreen(id : String ,lightViewModel: LightViewModel = viewModel()) {
                 onCheckedChange = { checked ->
                    lightViewModel.switchLight(checked)
                 },
-                labelOn = stringResource(id = R.string.on),
-                labelOff = stringResource(id = R.string.off)
+                labelOn = stringResource(id = R.string.onn),
+                labelOff = stringResource(id = R.string.offf)
             )
             Spacer(modifier = Modifier.height(16.dp))
             // Color Picker

@@ -77,8 +77,8 @@ fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
                 onCheckedChange = { checked ->
                     ovenViewModel.switchOven(checked)
                 },
-                labelOn = stringResource(id = R.string.on),
-                labelOff = stringResource(id = R.string.off)
+                labelOn = stringResource(id = R.string.onn),
+                labelOff = stringResource(id = R.string.offf)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -100,16 +100,36 @@ fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
 
             val Gmodes = listOf(stringResource(id = R.string.complete),
                 stringResource(id = R.string.econmic),
-                stringResource(id = R.string.off))
+                stringResource(id = R.string.offf))
 
+
+            val translateGrill = when(ovenUi.selectedGrillMode){
+                "complete"->stringResource(id = R.string.complete)
+                "economic"->stringResource(id = R.string.econmic)
+                "off"->stringResource(id = R.string.offf)
+                else-> ""
+            }
 
             ModeSelector(
                 title = stringResource(id = R.string.grillMode),
-                selectedMode = ovenUi.selectedGrillMode,
+                selectedMode = translateGrill,
                 modes = Gmodes,
                 onModeSelected = { mode ->
-                    if(mode!=ovenUi.selectedGrillMode){
-                        ovenViewModel.changeGrillMode(mode)
+                    if(mode!=translateGrill){
+                        when (mode) {
+                            Gmodes[0] -> {
+                                ovenViewModel.changeGrillMode("complete")
+                            }
+                            Gmodes[1] -> {
+                                ovenViewModel.changeGrillMode("economic")
+                            }
+                            Gmodes[2]-> {
+                                ovenViewModel.changeGrillMode("off")
+                            }
+                            else -> {
+                                // Handle other cases
+                            }
+                        }
                     }
 
                 }
@@ -119,15 +139,36 @@ fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
 
             val Cmodes = listOf(stringResource(id = R.string.normal),
                 stringResource(id = R.string.econmic),
-                stringResource(id = R.string.off))
+                stringResource(id = R.string.offf))
+
+            val transalteConv =when(ovenUi.selectedConvMode){
+                "normal"->stringResource(id =R.string.normal)
+                "economic"->stringResource(id = R.string.econmic)
+                "off"->stringResource(id = R.string.offf)
+                else-> ""
+            }
 
             ModeSelector(
                 title = stringResource(id = R.string.convMode),
-                selectedMode = ovenUi.selectedConvMode,
+                selectedMode = transalteConv,
                 modes = Cmodes,
                 onModeSelected = { mode ->
-                    if(mode != ovenUi.selectedConvMode){
-                        ovenViewModel.changeConvMode(mode)
+                    if(mode != transalteConv){
+                        when (mode) {
+                            Cmodes[0] -> {
+                                ovenViewModel.changeConvMode("normal")
+                            }
+                            Cmodes[1] -> {
+                                ovenViewModel.changeConvMode("economic")
+                            }
+                            Cmodes[2]-> {
+                                ovenViewModel.changeConvMode("off")
+                            }
+                            else -> {
+                                // Handle other cases
+                            }
+                        }
+
                     }
                 }
             )
@@ -139,13 +180,34 @@ fun ovenScreen(id: String,ovenViewModel: OvenViewModel = viewModel()) {
                 stringResource(id = R.string.bottom)
             )
 
+            val translateHeat=when(ovenUi.selectedHeatMode){
+                "conventional"->stringResource(id =R.string.conventional)
+                "top"->stringResource(id = R.string.top)
+                "bottom"->stringResource(id = R.string.bottom)
+                else-> ""
+            }
+
             ModeSelector(
                 title =  stringResource(id = R.string.heatMode),
-                selectedMode = ovenUi.selectedHeatMode,
+                selectedMode = translateHeat,
                 modes = Hmodes,
                 onModeSelected = { mode ->
-                    if(mode != ovenUi.selectedHeatMode ){
-                        ovenViewModel.changeHeatMode(mode)
+                    if(mode != translateHeat ){
+                        when (mode) {
+                            Hmodes[0] -> {
+                                ovenViewModel.changeHeatMode("conventional")
+                            }
+                            Hmodes[1] -> {
+                                ovenViewModel.changeHeatMode("top")
+                            }
+                            Hmodes[2]-> {
+                                ovenViewModel.changeHeatMode("bottom")
+                            }
+                            else -> {
+                                // Handle other cases
+                            }
+                        }
+
                     }
                 }
             )

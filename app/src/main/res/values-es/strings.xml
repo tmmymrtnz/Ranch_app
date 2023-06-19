@@ -16,8 +16,8 @@
     <string name="setTemmp">Establecer temperatura</string>
     <string name="normal">Normal</string>
     <string name="econmic">Económico</string>
-    <string name="off">Apagado</string>
-    <string name="on">Encendido</string>
+    <string name="offf">Apagado</string>
+    <string name="onn">Encendido</string>
     <string name="complete">Completo</string>
     <string name="conventional">Convencional</string>
     <string name="top">Arriba</string>
