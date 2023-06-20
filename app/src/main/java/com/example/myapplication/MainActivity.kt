@@ -1,9 +1,10 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
-import android.content.Intent
+import android.Manifest
 import android.content.IntentFilter
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -77,10 +78,15 @@ import com.example.myapplication.routines.RoutinesScreen
 import com.example.myapplication.speaker.SpeakerViewModel
 import com.example.myapplication.speaker.speakerScreen
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionRequired
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.rememberPermissionState
 
 
 class MainActivity : ComponentActivity() {
     private lateinit var receiver: SkipNotificationReceiver
+    @OptIn(ExperimentalPermissionsApi::class)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -95,6 +101,23 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
                 ) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        val permissionState =
+                            rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+                        if (!permissionState.hasPermission) {
+                            NotificationPermission(permissionState = permissionState)
+                            LaunchedEffect(true) {
+                                permissionState.launchPermissionRequest()
+                            }
+                        }
+                    }
+
+                    val deviceId = intent?.getStringExtra(MyIntent.DEVICE_ID)
+                    if (deviceId != null) {
+                        Text(
+                            text = "oops..."
+                        )
+                    }
                     Box(Modifier.padding(bottom = it.calculateBottomPadding())) {
                         if (isLandscape || isLargeTablet) {
                             Row(Modifier.fillMaxSize()) {
@@ -176,6 +199,21 @@ class MainActivity : ComponentActivity() {
             .also { registerReceiver(receiver, it) }
         super.onResume()
     }
+
+    @OptIn(ExperimentalPermissionsApi::class)
+    @Composable
+    fun NotificationPermission(
+        permissionState: PermissionState,
+    ) {
+        PermissionRequired(
+            permissionState = permissionState,
+            permissionNotGrantedContent = { /* TODO: función para infromarle al usuario de la necesidad de otrogar el permiso */ },
+            permissionNotAvailableContent = { /* TODO: función hacer las adecuaciones a la App debido a que el permiso no fue otorgado  */ }
+        ) {
+            /* Hacer uso del recurso porque el permiso fue otorgado */
+        }
+    }
+
     override fun onStop() {
         super.onStop()
         MyIntent.notif = false
