@@ -45,4 +45,6 @@
     <!-- string de routines -->
     <string name="routinesHeader">My Routines</string>
     <string name="eventListen">Event listener error!</string>
+    <string name="message"> The %1$s has been updated</string>
+
 </resources>

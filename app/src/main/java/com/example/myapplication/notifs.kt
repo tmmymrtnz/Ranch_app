@@ -37,7 +37,7 @@ fun sendCustomNotification(context: Context, title: String, content: String) {
 
     // Build the notification
     val builder = NotificationCompat.Builder(context, "Ranch")
-        .setSmallIcon(R.drawable.devices)
+        .setSmallIcon(R.drawable.logo_notext)
         .setContentTitle(title)
         .setContentText(content)
 

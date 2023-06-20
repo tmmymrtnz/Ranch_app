@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import androidx.compose.ui.platform.LocalContext
+import com.example.myapplication.data.network.RetrofitClient
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -39,10 +40,12 @@ class EventService : Service() {
 
                 eventList?.forEach {
 
+                    val name = getDeviceName(it.deviceId)
                     val intent2 = Intent().apply {
                         action = MyIntent.SHOW_NOTIFICATION
                         `package` = MyIntent.PACKAGE
                         putExtra(MyIntent.DEVICE_ID, it.deviceId)
+                        putExtra(MyIntent.DEVICE_NAME,name)
                     }
                     sendOrderedBroadcast(intent2, null)
 
@@ -54,8 +57,19 @@ class EventService : Service() {
         sendCustomNotification(this,"ERROR",this.getString(R.string.eventListen))
     }
 
-
         return START_STICKY
+    }
+
+    private suspend fun getDeviceName(id: String) : String {
+        runCatching {
+            val apiService = RetrofitClient.getApiService()
+            apiService?.getADevice(id)
+        }.onSuccess { response ->
+            val newDevice = response?.body()?.result
+
+            return newDevice?.name.orEmpty()
+        }
+        return "Unknown device"
     }
 
     override fun onBind(intent: Intent?): IBinder? {
