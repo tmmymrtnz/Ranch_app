@@ -57,42 +57,39 @@ fun speakerScreen(id: String, speakerViewModel: SpeakerViewModel = viewModel()) 
     for (i in 0 until (speakerUi.playlist?.size?.toInt() ?: 0)) {
         Log.d("gsong", speakerUi.playlist?.get(i)?.title.toString())
     }
-    MyApplicationTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.background)
-                .padding(16.dp)
 
-        ) {
-            Column {
-                Text(
-                    text = speakerUi.name.toString(),
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.scrim,
-                    modifier = Modifier.padding(16.dp)
-                )
+    Box(
+        modifier = Modifier
+            .background(color = MaterialTheme.colorScheme.background)
+            .padding(16.dp)
+            .fillMaxSize() // Fill the available space with the Column
+    ) {
+        Column{
+            Text(
+                text = speakerUi.name.toString(),
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.scrim,
+                modifier = Modifier.padding(16.dp)
+            )
 
-                SpeakerCard(
-                    speakerUi = speakerUi, speakerViewModel=speakerViewModel,
+            SpeakerCard(
+                speakerUi = speakerUi, speakerViewModel = speakerViewModel,
+            )
 
-                )
+            GenreSelector(
+                selectedGenre = speakerUi.currentGenre,
+                genres = speakerUi.genres,
+                onModeSelected = { mode ->
+                    speakerViewModel.setGenre(mode)
+                }
+            )
 
-                GenreSelector(
-                    selectedGenre = speakerUi.currentGenre,
-                    genres = speakerUi.genres,
-                    onModeSelected = { mode ->
-                        speakerViewModel.setGenre(mode)
-                    }
-                )
-
-
-                PlaylistCard(playlist = speakerUi.playlist ?: emptyList())
-                // Otros componentes o contenido aquí si es necesario
-            }
+            PlaylistCard(playlist = speakerUi.playlist ?: emptyList())
+            // Otros componentes o contenido aquí si es necesario
         }
     }
 }
+
 
 
 @Composable
@@ -114,9 +111,12 @@ fun PlaylistCard(playlist: List<Song>) {
             modifier = Modifier.padding(bottom = 8.dp),
             color = MaterialTheme.colorScheme.scrim,
         )
-        LazyColumn {
-            items(playlist.size) { song ->
-                SongItem(playlist[song])
+        Column(
+            modifier = Modifier.padding(2.dp).verticalScroll(rememberScrollState())
+        ) {
+            playlist.forEach{song ->
+                SongItem(song)
+
             }
         }
     }
@@ -125,12 +125,12 @@ fun PlaylistCard(playlist: List<Song>) {
 @Composable
 fun SongItem(song: Song) {
     Column(
-        modifier = Modifier.padding(vertical = 8.dp)
-    ) {
+        modifier = Modifier.padding(5.dp)
+    ){
         Text(text = song.title ?: "", style = MaterialTheme.typography.headlineSmall)
-        Text(text = song.artist ?: "", style = MaterialTheme.typography.displayMedium)
-        Text(text = song.album ?: "", style = MaterialTheme.typography.displayMedium)
-        Text(text = formatTime(song.duration ?: 0), style = MaterialTheme.typography.displayMedium)
+        Text(text = song.artist ?: "", style = MaterialTheme.typography.bodySmall)
+        Text(text = song.album ?: "", style = MaterialTheme.typography.bodySmall)
+        Text(text = formatTime(song.duration ?: 0), style = MaterialTheme.typography.bodySmall)
     }
 }
 
@@ -282,5 +282,7 @@ fun GenreButton(
 @Preview
 @Composable
 fun speakerScreenPrev() {
-    speakerScreen(id="1a13c0ffa7537e06")
+    MyApplicationTheme() {
+        speakerScreen(id="1a13c0ffa7537e06")
+    }
 }
