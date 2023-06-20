@@ -45,4 +45,5 @@
 
     <!-- string de routines -->
     <string name="routinesHeader">Mis Rutinas</string>
+    <string name="eventListen">Error en el ojedor de eventos!</string>
 </resources>

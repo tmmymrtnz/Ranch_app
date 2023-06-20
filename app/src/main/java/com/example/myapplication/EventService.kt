@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
@@ -15,6 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.net.ConnectException
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -30,8 +32,7 @@ class EventService : Service() {
     @OptIn(DelicateCoroutinesApi::class)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG,"starting service...")
-        val context = applicationContext
-
+    try {
         job = GlobalScope.launch(Dispatchers.IO) {
             while (true){
                 val eventList = fetchEvents()
@@ -49,6 +50,10 @@ class EventService : Service() {
                 delay(DELAY_MILIS)
             }
         }
+    }catch ( e : ConnectException){
+        sendCustomNotification(this,"ERROR",this.getString(R.string.eventListen))
+    }
+
 
         return START_STICKY
     }

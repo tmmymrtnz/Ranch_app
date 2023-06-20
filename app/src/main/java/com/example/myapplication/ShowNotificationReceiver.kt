@@ -12,7 +12,7 @@ class ShowNotificationReceiver : BroadcastReceiver() {
         val deviceId: String? = intent.getStringExtra(MyIntent.DEVICE_ID)
         Log.d(TAG, "Show notification intent received {$deviceId)")
 
-        sendCustomNotification(context, deviceId!!)
+        sendCustomNotification(context, deviceId!!,"device!")
     }
 
 

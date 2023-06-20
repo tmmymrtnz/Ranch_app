@@ -44,4 +44,5 @@
 
     <!-- string de routines -->
     <string name="routinesHeader">My Routines</string>
+    <string name="eventListen">Event listener error!</string>
 </resources>

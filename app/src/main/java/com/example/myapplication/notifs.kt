@@ -30,7 +30,7 @@ fun createNotificationChannel(context: Context) {
         notificationManager.createNotificationChannel(channel)
     }
 }
-fun sendCustomNotification(context: Context, title: String) {
+fun sendCustomNotification(context: Context, title: String, content: String) {
     Log.d("Ranch", "Sending Custom Notification")
 
 
@@ -39,7 +39,7 @@ fun sendCustomNotification(context: Context, title: String) {
     val builder = NotificationCompat.Builder(context, "Ranch")
         .setSmallIcon(R.drawable.devices)
         .setContentTitle(title)
-        .setContentText("dx")
+        .setContentText(content)
 
     // Create a default PendingIntent
     val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
