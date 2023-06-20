@@ -3,9 +3,11 @@ package com.example.myapplication.data.network
 import com.example.myapplication.data.network.model.Device
 import com.example.myapplication.data.network.model.DeviceList
 import com.example.myapplication.data.network.model.DeviceTypesList
+import com.example.myapplication.data.network.model.Playlist
 import com.example.myapplication.data.network.model.Routines
 import com.example.myapplication.data.network.model.RoutinesResult
 import com.example.myapplication.data.network.model.SongAux
+import com.example.myapplication.data.network.model.State
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -40,6 +42,9 @@ interface ApiService {
     @PUT("routines/{id}/execute/")
     suspend fun executeRoutine(@Path("id")id: String): Response<RoutinesResult>
 
+    @GET("/devices/{id}/state")
+    suspend fun getDeviceState(@Path("id")id:String) :Response<Device>
+
     @PUT("/api/devices/{id}/{action}")
-    suspend fun getPlaylist(@Path("id") id: String, @Path("action") action: String) : Response<ArrayList<SongAux>>
+    suspend fun getPlaylist(@Path("id") id: String, @Path("action") action: String) : Response<Playlist>
 }

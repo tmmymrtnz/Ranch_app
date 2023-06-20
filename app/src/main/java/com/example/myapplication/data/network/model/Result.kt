@@ -12,5 +12,10 @@ data class Result (
     @SerializedName("events") var events: List<Events> = listOf(),
     @SerializedName("actions") var actions: List<Actions> = listOf(),
     @SerializedName("powerUsage") var powerUsage: Int? = null,
+    @SerializedName("song") var song: SongAux? = null,
+    @SerializedName("volume") var volume : Int?    = null,
+    @SerializedName("genre") var genre  : String? = null,
+    @SerializedName("status"    ) var status    : String? = null,
 
-)
+
+    )

@@ -1,7 +1,7 @@
 package com.example.myapplication.speaker
 
 
-import android.widget.Spinner
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,71 +12,38 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringArrayResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
-import androidx.compose.material.icons.Icons
-
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Slider
 
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import com.example.myapplication.R
 import com.example.myapplication.data.network.model.Song
-import com.example.myapplication.ovenScreen
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 
@@ -84,22 +51,25 @@ import com.example.myapplication.ui.theme.MyApplicationTheme
 fun speakerScreen(id: String, speakerViewModel: SpeakerViewModel = viewModel()) {
     val speakerUi by speakerViewModel.uiState.collectAsState()
     speakerViewModel.setId(id)
-    LaunchedEffect(Unit) {
-        speakerViewModel.fetchADevice(id)
+    Log.d("nameeee",speakerUi.name.toString())
+    Log.d("genre",speakerUi.currentGenre.toString())
+    speakerUi.playlist
+    for (i in 0 until (speakerUi.playlist?.size?.toInt() ?: 0)) {
+        Log.d("gsong", speakerUi.playlist?.get(i)?.title.toString())
     }
-
     MyApplicationTheme {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.background)
                 .padding(16.dp)
+
         ) {
             Column {
                 Text(
-                    text = "Speaker Header",
+                    text = speakerUi.name.toString(),
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.scrim,
                     modifier = Modifier.padding(16.dp)
                 )
 
@@ -131,7 +101,10 @@ fun PlaylistCard(playlist: List<Song>) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(color = MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(8.dp))
+            .background(
+                color = MaterialTheme.colorScheme.tertiary,
+                shape = RoundedCornerShape(8.dp)
+            )
             .padding(16.dp)
     ) {
         Text(
@@ -139,7 +112,7 @@ fun PlaylistCard(playlist: List<Song>) {
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 8.dp),
-            color = Color.White,
+            color = MaterialTheme.colorScheme.scrim,
         )
         LazyColumn {
             items(playlist.size) { song ->
@@ -174,7 +147,7 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
         Text(text = speakerUi.currentSong?.album ?: "", fontSize = 16.sp)
 
         // Estado (playing o paused)
-        Text(text = speakerUi.state ?: "", fontSize = 16.sp)
+        Text(text = speakerUi.status ?: "", fontSize = 16.sp)
 
         // Barra de reproducción
         val progress = speakerUi.currentSong?.progress ?: 0
@@ -196,10 +169,10 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
                 Text(text = "Previous")
             }
 
-            Button(onClick = { if (speakerUi.state == "playing"){
+            Button(onClick = { if (speakerUi.status == "playing"){
                 speakerViewModel.pause(speakerUi.id.toString())
             }else{speakerViewModel.play(speakerUi.id.toString())} }, enabled = speakerUi.currentSong != null) {
-                Text(text = if (speakerUi.state == "playing") "Pause" else "Play")
+                Text(text = if (speakerUi.status == "playing") "Pause" else "Play")
             }
 
             Button(onClick = {  speakerViewModel.nextSong(speakerUi.id.toString()) }, enabled = speakerUi.currentSong != null) {
@@ -257,7 +230,7 @@ fun GenreSelector(
             Text(
                 text = stringResource(R.string.GenreSelector),
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.scrim,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -287,7 +260,7 @@ fun GenreButton(
     onModeSelected: (String) -> Unit
 ) {
     val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
-    val textColor = if (isSelected) Color.White else Color.Gray
+    val textColor = if (isSelected) MaterialTheme.colorScheme.scrim else Color.Gray
 
     Button(
         onClick = { onModeSelected(genre) },

@@ -6,19 +6,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 import androidx.lifecycle.viewModelScope
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import com.example.myapplication.data.network.RetrofitClient
-import com.example.myapplication.data.network.model.Device
 import com.example.myapplication.data.network.model.Song
-import com.example.myapplication.data.network.model.SongAux
-import com.google.gson.Gson
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class SpeakerViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(SpeakerUiState())
@@ -31,6 +24,22 @@ class SpeakerViewModel: ViewModel() {
         speakerId = id
     }
 
+
+    init {
+        polling()
+    }
+
+    private fun polling() {
+        viewModelScope.launch {
+            while (true) {
+                delay(1000L) // Delay for 1 second
+                fetchADevice(speakerId)
+                getDeviceState(speakerId)
+                getPlayList(speakerId)
+            }
+        }
+    }
+
     fun fetchADevice(id: String) {
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
@@ -40,30 +49,12 @@ class SpeakerViewModel: ViewModel() {
                     RetrofitClient.getApiService()?.getADevice(id)
                         ?: throw Exception("API Service is null")
                 }.onSuccess { response ->
-                    val state = response.body()?.result?.state
-                    val songResponse = state?.song
-
-                    val currentSong = if (state?.status == "playing" && songResponse != null) {
-                        val durationInSeconds = convertTimeToSeconds(songResponse.duration)
-                        val progressInSeconds = convertTimeToSeconds(songResponse.progress)
-
-                        Song(
-                            title = songResponse.title ?: "",
-                            duration = durationInSeconds,
-                            artist = songResponse.artist ?: "",
-                            album = songResponse.album ?: "",
-                            progress = progressInSeconds
-                        )
-                    } else {
-                        null
-                    }
-
                     _uiState.update {
                         it.copy(
                             device = response.body(),
-                            state = state?.status ?: "",
-                            currentSong = currentSong,
-                            currentGenre = state?.genre ?: "",
+                            id = response.body()?.result?.id,
+                            name =  response.body()?.result?.name ,
+                            currentGenre = response.body()?.result?.state?.genre,
                             isLoading = false
                         )
                     }
@@ -79,6 +70,53 @@ class SpeakerViewModel: ViewModel() {
         }
     }
 
+    fun getDeviceState(id: String) {
+        fetchJob?.cancel()
+        fetchJob = viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            viewModelScope.launch {
+                runCatching {
+                    RetrofitClient.getApiService()?.getDeviceState(id)
+                        ?: throw Exception("API Service is null")
+                }.onSuccess { response ->
+
+                    val songResponse = response.body()?.result?.song
+
+                    val currentSong = if (response.body()?.result?.status == "playing" && songResponse != null) {
+                        val durationInSeconds = convertTimeToSeconds(songResponse.duration)
+                        val progressInSeconds = convertTimeToSeconds(songResponse.progress)
+
+                        Song(
+                            title = songResponse.title ?: "",
+                            duration = durationInSeconds,
+                            artist = songResponse.artist ?: "",
+                            album = songResponse.album ?: "",
+                            progress = progressInSeconds
+                        )
+                    } else {
+                        null
+                    }
+                    _uiState.update {
+                        it.copy(
+                            device = response.body(),
+                            status = response.body()?.result?.status,
+                            currentGenre = response.body()?.result?.genre,
+                            currentSong = currentSong,
+                            volume = response.body()?.result?.volume,
+                            isLoading = false
+                        )
+                    }
+                }.onFailure { e ->
+                    _uiState.update {
+                        it.copy(
+                            message = e.message,
+                            isLoading = false
+                        )
+                    }
+                }
+            }
+        }
+    }
 
 
     fun doAction(id: String, actionName: String, actionParams: List<String>?) {
@@ -108,7 +146,7 @@ class SpeakerViewModel: ViewModel() {
         }
     }
 
-    suspend fun getPlaylistAction(id: String) {
+     fun getPlaylistAction(id: String) {
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
@@ -135,17 +173,17 @@ class SpeakerViewModel: ViewModel() {
         }
     }
 
-    suspend fun getPlayList(id: String) {
+    fun getPlayList(id: String) {
         getPlaylistAction(id)
         val playlistAux = uiState.value.playlistAux
         val playlist = ArrayList<Song>()
-        playlistAux?.forEach { songAux ->
+        playlistAux?.result?.forEach { songAux ->
             val song = Song(
                 title = songAux.title,
                 artist = songAux.artist,
                 album = songAux.album,
-                duration = songAux.duration?.toInt(),
-                progress = songAux.progress?.toInt()
+                duration = convertTimeToSeconds(songAux.duration),
+                progress = convertTimeToSeconds(songAux.progress)
             )
             playlist.add(song)
         }

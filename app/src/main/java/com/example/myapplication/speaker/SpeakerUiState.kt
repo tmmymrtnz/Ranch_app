@@ -2,15 +2,18 @@ package com.example.myapplication.speaker
 
 import com.example.myapplication.R
 import com.example.myapplication.data.network.model.Device
+import com.example.myapplication.data.network.model.Playlist
 import com.example.myapplication.data.network.model.Song
 import com.example.myapplication.data.network.model.SongAux
+import com.example.myapplication.data.network.model.State
 
 
 data class SpeakerUiState(
+    val name: String?=null,
     val playlist: ArrayList<Song>? = null,
-    val playlistAux: ArrayList<SongAux>? = null,
+    val playlistAux: Playlist? = null,
     val id: String? = null,
-    val state: String? = null,
+    val status: String? = null,
     val message: String? = null,
     val currentSong: Song? = null,
     val currentGenre: String? = null,
