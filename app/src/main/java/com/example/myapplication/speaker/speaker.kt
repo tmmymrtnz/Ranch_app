@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -56,9 +57,12 @@ fun speakerScreen(id: String, speakerViewModel: SpeakerViewModel = viewModel()) 
         modifier = Modifier
             .background(color = MaterialTheme.colorScheme.background)
             .padding(16.dp)
-            .fillMaxSize() // Fill the available space with the Column
     ) {
-        Column{
+        Column(
+            modifier = Modifier
+                .height(IntrinsicSize.Max)
+                .padding(2.dp).verticalScroll(rememberScrollState())
+        ){
             Text(
                 text = speakerUi.name.toString(),
                 style = MaterialTheme.typography.headlineMedium,
@@ -66,8 +70,7 @@ fun speakerScreen(id: String, speakerViewModel: SpeakerViewModel = viewModel()) 
                 modifier = Modifier.padding(16.dp)
             )
 
-            SpeakerCard(
-                speakerUi = speakerUi, speakerViewModel = speakerViewModel,
+            SpeakerCard(speakerUi = speakerUi, speakerViewModel = speakerViewModel,
             )
 
             GenreSelector(
@@ -97,6 +100,7 @@ fun PlaylistCard(playlist: List<Song>) {
                 shape = RoundedCornerShape(8.dp)
             )
             .padding(16.dp)
+            .height(150.dp)
     ) {
         Text(
             text = "Playlist",
@@ -106,7 +110,7 @@ fun PlaylistCard(playlist: List<Song>) {
             color = MaterialTheme.colorScheme.scrim,
         )
         Column(
-            modifier = Modifier.padding(2.dp).verticalScroll(rememberScrollState())
+           modifier = Modifier.padding(2.dp).verticalScroll(rememberScrollState())
         ) {
             playlist.forEach{song ->
                 SongItem(song)
@@ -132,7 +136,7 @@ fun SongItem(song: Song) {
 
 @Composable
 fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(16.dp) ) {
         // Título de la canción
         Text(text = speakerUi.currentSong?.title ?: "No song playing", fontSize = 20.sp, fontWeight = FontWeight.Bold)
 
@@ -243,7 +247,7 @@ fun GenreSelector(
 ) {
     Box(
         modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.tertiary, RoundedCornerShape(20.dp))
+            .background(color = MaterialTheme.colorScheme.tertiary, RoundedCornerShape(20.dp)) .height(200.dp)
     ) {
         Column(
             modifier = Modifier

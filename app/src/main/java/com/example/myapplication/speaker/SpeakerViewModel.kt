@@ -13,6 +13,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 class SpeakerViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(SpeakerUiState())
@@ -50,7 +51,7 @@ class SpeakerViewModel: ViewModel() {
                     RetrofitClient.getApiService()?.getADevice(id)
                         ?: throw Exception("API Service is null")
                 }.onSuccess { response ->
-                    val songResponse = response.body()?.result?.song
+                    val songResponse = response.body()?.result?.state?.song
 
                     val currentSong = if (response.body()?.result?.status != "stopped" && songResponse != null) {
                         val durationInSeconds = convertTimeToSeconds(songResponse.duration)
@@ -72,11 +73,12 @@ class SpeakerViewModel: ViewModel() {
                             id = response.body()?.result?.id,
                             name =  response.body()?.result?.name ,
                             currentGenre = response.body()?.result?.state?.genre,
-                            status = response.body()?.result?.status,
+                            status = response.body()?.result?.state?.status,
                             currentSong = currentSong,
                             isLoading = false
                         )
                     }
+                    Log.d("AAAA",response.body()?.result?.toString()!!)
                 }.onFailure { e ->
                     _uiState.update {
                         it.copy(
