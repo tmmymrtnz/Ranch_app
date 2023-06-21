@@ -19,11 +19,16 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,6 +44,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
 import com.example.myapplication.routines.RoutineViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import kotlinx.coroutines.launch
 
 @Composable
 @Preview
@@ -107,61 +113,75 @@ fun RoutineCardComponent(routineViewModel: RoutineViewModel,
     devicesByRoom: Map<String, List<RoutineViewModel.DeviceAux>>,
     modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = modifier
-            .padding(10.dp)
-            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    val routineText = stringResource(id = R.string.execution)
+    val executed = stringResource(id = R.string.executed)
+
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) {paddingValues ->
+        Box(
+            modifier = modifier
+                .padding(10.dp)
+                .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+                .padding(paddingValues)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.padding(16.dp)
             ) {
-                Text(
-                    text = routine.name,
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.scrim
-                    ),
-                    modifier = Modifier.weight(1f)
-                )
-                IconButton(
-                    onClick = { routineViewModel.execute(routine.id) },
-                    modifier = Modifier.size(40.dp)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.play_circle),
-                        contentDescription = "Play Button",
-                        tint = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            }
-
-            devicesByRoom.forEach { (roomName, devices) ->
-                Text(
-                    text = roomName,
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.scrim
-                    ),
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-
-                devices.forEach { device ->
                     Text(
-                        text = "- ${device.deviceName} ${device.actionName}",
+                        text = routine.name,
                         style = TextStyle(
-                            fontSize = 14.sp,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.scrim
                         ),
-                        modifier = Modifier.padding(start = 16.dp, bottom = 4.dp)
+                        modifier = Modifier.weight(1f)
                     )
+                    IconButton(
+                        onClick = {
+                            routineViewModel.execute(routine.id)
+                            scope.launch {
+                                snackbarHostState.showSnackbar("$routineText ${routine.name} $executed")
+                            }
+                                  },
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.play_circle),
+                            contentDescription = "Play Button",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+
+                devicesByRoom.forEach { (roomName, devices) ->
+                    Text(
+                        text = roomName,
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.scrim
+                        ),
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+
+                    devices.forEach { device ->
+                        Text(
+                            text = "- ${device.deviceName} ${device.actionName}",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                color = MaterialTheme.colorScheme.scrim
+                            ),
+                            modifier = Modifier.padding(start = 16.dp, bottom = 4.dp)
+                        )
+                    }
                 }
             }
         }

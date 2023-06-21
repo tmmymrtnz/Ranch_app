@@ -8,6 +8,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="mydevices">My Devices</string>
+
     <!-- string de oven -->
     <string name="convMode">Set Convection Mode</string>
     <string name="grillMode">Set Grill Mode</string>
@@ -21,16 +22,30 @@
     <string name="conventional">conventional</string>
     <string name="top">top</string>
     <string name="bottom">bottom</string>
-    <!-- string de fridege-->
+    <string name="changedGrillMode">Grill Mode has been set to</string>
+    <string name="changedHeatMode">Heat Mode has been set to</string>
+    <string name="changedConvectionMode">Convection Mode has been set to</string>
+
+    <!-- string de fridge-->
     <string name="setFTemmp">Set Freezer temperature</string>
     <string name="Fmode">Fridge Mode</string>
     <string name="defaul">default</string>
     <string name="vacation">vacation</string>
     <string name="party">party</string>
+    <string name="defaultMode">Mode has been set to default</string>
+    <string name="vacationMode">Mode has been set to vacation</string>
+    <string name="partyMode">Mode has been set to party</string>
+    <string name="changedTemp">Temperature has been set to</string>
+    <string name="changedTempF">Freezer temperature has been set to</string>
+
     <!-- string de curtain -->
+    <string name="opening">is opening</string>
+    <string name="closing">is closing</string>
+    <string name="changedLevel">Level has been set to</string>
 
     <!-- string de speaker -->
     <string name="GenreSelector">Select genre</string>
+
     <!-- string de lightbulb -->
     <string name="setB">Set Brightness</string>
     <string name="bright">Brightness Level</string>
@@ -38,6 +53,10 @@
     <string name="r">Red</string>
     <string name="g">Green</string>
     <string name="b">Blue</string>
+    <string name="changed_color">New color has been set</string>
+    <string name="changed_brightness">Brightness has been set to</string>
+    <string name="is_on">is on</string>
+    <string name="is_off">is off</string>
 
     <!-- string de devices -->
     <string name="devicesHeader">Devices</string>
@@ -46,5 +65,7 @@
     <string name="routinesHeader">My Routines</string>
     <string name="eventListen">Event listener error!</string>
     <string name="message"> The %1$s has been updated</string>
+    <string name="execution">The routine</string>
+    <string name="executed">has been executed</string>
 
 </resources>

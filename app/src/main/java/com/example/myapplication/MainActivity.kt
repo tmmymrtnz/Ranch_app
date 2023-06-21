@@ -45,7 +45,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -72,6 +71,7 @@ import com.example.myapplication.data.network.model.Result
 import com.example.myapplication.devices.DeviceViewModel
 import com.example.myapplication.devices.DevicesScreen
 import com.example.myapplication.fridge.FridgeViewModel
+import com.example.myapplication.lamp.LightBulbScreen
 import com.example.myapplication.lamp.LightViewModel
 import com.example.myapplication.oven.OvenViewModel
 import com.example.myapplication.routines.RoutinesScreen
@@ -398,75 +398,78 @@ fun MyScreenComponent(
     homeViewModel: DeviceViewModel = viewModel(),
     navController: NavController,
 ) {
-
+    val snackbarHostState = remember { SnackbarHostState() }
     val uiState by homeViewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit){
         homeViewModel.fetchDevices()
     }
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
+    Scaffold(snackbarHost = { SnackbarHost(hostState = snackbarHostState) }) { paddingValues ->
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(paddingValues) // Use the padding here
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.padding(16.dp),
             ) {
-                Image(
-                    painter = painterResource(R.drawable.logo_notext),
-                    contentDescription = null,
-                    modifier = Modifier.size(88.dp)
-                )
-                Text(
-                    text = stringResource(id = R.string.app_name),
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.scrim,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Divider(color = MaterialTheme.colorScheme.secondary)
-            Spacer(modifier = Modifier.height(8.dp))
-            val groupedDevices = uiState.devices?.result?.groupBy { it.room?.name }
-            LazyColumn(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ){
-                groupedDevices?.forEach { (room, devices) ->
-                    item {
-                        Text(
-                            text = room ?: "Not in room",
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.scrim,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                        Divider(color = MaterialTheme.colorScheme.secondary)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        LazyRow {
-                            items(items = devices){device ->
-                                RoundedCardComponent(
-                                    title = device.name ?: "",
-                                    result = device,
-                                    icon = painterResource(id =
-                                    when (device.type?.name.toString()) {
-                                        "fridge" -> R.drawable.fridge
-                                        "speaker" -> R.drawable.speaker
-                                        "oven" -> R.drawable.stove
-                                        "lamp" -> R.drawable.lightbulb
-                                        "blinds" -> R.drawable.curtains
-                                        else -> R.drawable.fridge
-                                    }),
-                                    navController =  navController
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.logo_notext),
+                        contentDescription = null,
+                        modifier = Modifier.size(88.dp)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.app_name),
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.scrim,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Divider(color = MaterialTheme.colorScheme.secondary)
+                Spacer(modifier = Modifier.height(8.dp))
+                val groupedDevices = uiState.devices?.result?.groupBy { it.room?.name }
+                LazyColumn(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    groupedDevices?.forEach { (room, devices) ->
+                        item {
+                            Text(
+                                text = room ?: "Not in room",
+                                style = MaterialTheme.typography.headlineSmall,
+                                color = MaterialTheme.colorScheme.scrim,
+                                modifier = Modifier.padding(start = 8.dp)
+                            )
+                            Divider(color = MaterialTheme.colorScheme.secondary)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            LazyRow {
+                                items(items = devices){device ->
+                                    RoundedCardComponent(
+                                        title = device.name ?: "",
+                                        result = device,
+                                        icon = painterResource(id =
+                                        when (device.type?.name.toString()) {
+                                            "fridge" -> R.drawable.fridge
+                                            "speaker" -> R.drawable.speaker
+                                            "oven" -> R.drawable.stove
+                                            "lamp" -> R.drawable.lightbulb
+                                            "blinds" -> R.drawable.curtains
+                                            else -> R.drawable.fridge
+                                        }),
+                                        navController =  navController
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                }
                             }
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
             }
