@@ -18,4 +18,6 @@ data class Result (
     @SerializedName("status"    ) var status    : String? = null,
 
 
+
     )
+

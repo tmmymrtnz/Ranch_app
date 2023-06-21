@@ -35,7 +35,7 @@ class SpeakerViewModel: ViewModel() {
             while (true) {
                 delay(1000L) // Delay for 1 second
                 fetchADevice(speakerId)
-                getDeviceState(speakerId)
+                //getDeviceState(speakerId)
                 getPlayList(speakerId)
             }
         }
@@ -50,12 +50,30 @@ class SpeakerViewModel: ViewModel() {
                     RetrofitClient.getApiService()?.getADevice(id)
                         ?: throw Exception("API Service is null")
                 }.onSuccess { response ->
+                    val songResponse = response.body()?.result?.song
+
+                    val currentSong = if (response.body()?.result?.status != "stopped" && songResponse != null) {
+                        val durationInSeconds = convertTimeToSeconds(songResponse.duration)
+                        val progressInSeconds = convertTimeToSeconds(songResponse.progress)
+
+                        Song(
+                            title = songResponse.title ?: "",
+                            duration = durationInSeconds,
+                            artist = songResponse.artist ?: "",
+                            album = songResponse.album ?: "",
+                            progress = progressInSeconds
+                        )
+                    } else {
+                        null
+                    }
                     _uiState.update {
                         it.copy(
                             device = response.body(),
                             id = response.body()?.result?.id,
                             name =  response.body()?.result?.name ,
                             currentGenre = response.body()?.result?.state?.genre,
+                            status = response.body()?.result?.status,
+                            currentSong = currentSong,
                             isLoading = false
                         )
                     }
@@ -71,7 +89,7 @@ class SpeakerViewModel: ViewModel() {
         }
     }
 
-    fun getDeviceState(id: String) {
+    /*fun getDeviceState(id: String) {
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
@@ -83,7 +101,7 @@ class SpeakerViewModel: ViewModel() {
 
                     val songResponse = response.body()?.result?.song
 
-                    val currentSong = if (response.body()?.result?.status == "playing" && songResponse != null) {
+                    val currentSong = if (response.body()?.result?.status != "stopped" && songResponse != null) {
                         val durationInSeconds = convertTimeToSeconds(songResponse.duration)
                         val progressInSeconds = convertTimeToSeconds(songResponse.progress)
 
@@ -118,6 +136,7 @@ class SpeakerViewModel: ViewModel() {
             }
         }
     }
+*/
 
 
     fun doAction(id: String, actionName: String, actionParams: List<String>?) {
@@ -129,15 +148,66 @@ class SpeakerViewModel: ViewModel() {
                     RetrofitClient.getApiService()?.makeAction(id, actionName, actionParams)
                         ?: throw Exception("API Service is null")
                 }.onSuccess { response ->
-                    _uiState.update {
-                        it.copy(
+                    _uiState.update { currentState ->
+                        currentState.copy(
                             device = response.body(),
                             isLoading = false
                         )
                     }
+                    when (actionName) {
+                        "play" -> {
+                            if(_uiState.value.status == "stopped"){
+                                _uiState.update { currentState ->
+                                    currentState.copy(status = "playing")
+                                }
+                            }
+                        }
+                        "pause" -> {
+                            if(_uiState.value.status == "playing"){
+                                _uiState.update { currentState ->
+                                    currentState.copy(status = "paused")
+                                }
+                            }
+                        }
+                        "stop" -> {
+                            if(_uiState.value.status == "playing"){
+                                _uiState.update { currentState ->
+                                    currentState.copy(status = "stopped")
+                                }
+                            }
+                        }
+                        "resume" -> {
+                            if(_uiState.value.status == "paused"){
+                                _uiState.update { currentState ->
+                                    currentState.copy(status = "playing")
+                                }
+                            }
+                        }
+                        "nextSong" -> {
+                            fetchADevice(id)
+                            _uiState.update { currentState ->
+                                currentState.copy(status = "playing")
+                            }
+                        }
+                        "previousSong" -> {
+                            fetchADevice(id)
+                            _uiState.update { currentState ->
+                                currentState.copy(status = "playing")
+                            }
+                        }
+                        "setGenre" -> {
+                            if(_uiState.value.currentGenre != actionParams?.get(0)){
+                                _uiState.update { currentState ->
+                                    currentState.copy(currentGenre = actionParams?.get(0))
+                                }
+                                getPlayList(id)
+                            }
+
+                        }
+                    }
                 }.onFailure { e ->
-                    _uiState.update {
-                        it.copy(
+                    _uiState.update { currentState ->
+                        currentState.copy(
                             message = e.message,
                             isLoading = false
                         )
@@ -147,7 +217,8 @@ class SpeakerViewModel: ViewModel() {
         }
     }
 
-     fun getPlaylistAction(id: String) {
+
+    fun getPlaylistAction(id: String) {
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
@@ -192,77 +263,81 @@ class SpeakerViewModel: ViewModel() {
     }
 
 
-    fun doActionInt(id: String,actionName: String, actionParams: List<Int>?){
+    fun doActionInt(id: String, actionName: String, actionParams: List<Int>?) {
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             viewModelScope.launch {
                 runCatching {
-                    RetrofitClient.getApiService()?.makeActionInt(id,actionName,actionParams)
+                    RetrofitClient.getApiService()?.makeActionInt(id, actionName, actionParams)
                         ?: throw Exception("API Service is null")
                 }.onSuccess { response ->
-                    _uiState.update {
-                        it.copy(
+                    _uiState.update { currentState ->
+                        currentState.copy(
                             device = response.body(),
                             isLoading = false
                         )
                     }
+                    when (actionName) {
+                        "setVolume" -> {
+                            _uiState.update { currentState ->
+                                currentState.copy(volume = actionParams?.get(0))
+                            }
+                        }
+                    }
                 }.onFailure { e ->
-                    _uiState.update {
-                        it.copy(
+                    _uiState.update { currentState ->
+                        currentState.copy(
                             message = e.message,
                             isLoading = false
                         )
                     }
                 }
-
             }
-
         }
     }
 
 
-
-    fun setVolume(id: String, volume: Int) {
+    fun setVolume(volume: Int) {
         val actionName = "setVolume"
         val actionParams = listOf(volume)
-        doActionInt(id, actionName, actionParams)
+        doActionInt(speakerId, actionName, actionParams)
     }
 
-    fun play(id: String) {
+    fun play() {
         val actionName = "play"
-        doAction(id, actionName, null)
+        doAction(speakerId, actionName, null)
     }
 
-    fun stop(id: String) {
+    fun stop() {
         val actionName = "stop"
-        doAction(id, actionName, null)
+        doAction(speakerId, actionName, null)
     }
 
-    fun pause(id: String) {
+    fun pause() {
         val actionName = "pause"
-        doAction(id, actionName, null)
+        doAction(speakerId, actionName, null)
     }
 
-    fun resume(id: String) {
+    fun resume() {
         val actionName = "resume"
-        doAction(id, actionName, null)
+        doAction(speakerId, actionName, null)
     }
 
-    fun nextSong(id: String) {
+    fun nextSong() {
         val actionName = "nextSong"
-        doAction(id, actionName, null)
+        doAction(speakerId, actionName, null)
     }
 
-    fun previousSong(id: String) {
+    fun previousSong() {
         val actionName = "previousSong"
-        doAction(id, actionName, null)
+        doAction(speakerId, actionName, null)
     }
 
-    fun setGenre(id: String, genre: String) {
+    fun setGenre(genre: String) {
         val actionName = "setGenre"
         val actionParams = listOf(genre)
-        doAction(id, actionName, actionParams)
+        doAction(speakerId, actionName, actionParams)
     }
 
 
@@ -284,9 +359,6 @@ class SpeakerViewModel: ViewModel() {
         }
     }
 
-    fun setGenre(mode: String) {
-
-    }
 
 
 }

@@ -51,13 +51,7 @@ import com.example.myapplication.ui.theme.MyApplicationTheme
 fun speakerScreen(id: String, speakerViewModel: SpeakerViewModel = viewModel()) {
     val speakerUi by speakerViewModel.uiState.collectAsState()
     speakerViewModel.setId(id)
-    Log.d("nameeee",speakerUi.name.toString())
-    Log.d("genre",speakerUi.currentGenre.toString())
-    speakerUi.playlist
-    for (i in 0 until (speakerUi.playlist?.size?.toInt() ?: 0)) {
-        Log.d("gsong", speakerUi.playlist?.get(i)?.title.toString())
-    }
-
+    Log.d("status",speakerUi.status.toString())
     Box(
         modifier = Modifier
             .background(color = MaterialTheme.colorScheme.background)
@@ -79,8 +73,8 @@ fun speakerScreen(id: String, speakerViewModel: SpeakerViewModel = viewModel()) 
             GenreSelector(
                 selectedGenre = speakerUi.currentGenre,
                 genres = speakerUi.genres,
-                onModeSelected = { mode ->
-                    speakerViewModel.setGenre(mode)
+                onModeSelected = { genre ->
+                    speakerViewModel.setGenre(genre)
                 }
             )
 
@@ -165,22 +159,43 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
 
         // Botones
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-            Button(onClick = { speakerViewModel.previousSong(speakerUi.id.toString()) }, enabled = speakerUi.currentSong != null) {
+            Button(
+                onClick = { speakerViewModel.previousSong() },
+                enabled = speakerUi.status != "stopped"
+            ) {
                 Text(text = "Previous")
             }
 
-            Button(onClick = { if (speakerUi.status == "playing"){
-                speakerViewModel.pause(speakerUi.id.toString())
-            }else{speakerViewModel.play(speakerUi.id.toString())} }, enabled = speakerUi.currentSong != null) {
+            Button(
+                onClick = {
+                    if (speakerUi.status == "playing") {
+                        speakerViewModel.pause()
+                    } else if (speakerUi.status == "paused") {
+                        speakerViewModel.resume()
+                    }
+                },
+                enabled = speakerUi.status != "stopped"
+            ) {
                 Text(text = if (speakerUi.status == "playing") "Pause" else "Play")
             }
 
-            Button(onClick = {  speakerViewModel.nextSong(speakerUi.id.toString()) }, enabled = speakerUi.currentSong != null) {
+            Button(
+                onClick = { speakerViewModel.nextSong() },
+                enabled = speakerUi.status != "stopped"
+            ) {
                 Text(text = "Next")
             }
 
-            Button(onClick = { speakerViewModel.stop(speakerUi.id.toString()) }) {
-                Text(text = "Stop")
+            Button(
+                onClick = { if (speakerUi.status == "playing") {
+                            speakerViewModel.stop()
+                            } else if (speakerUi.status == "stopped") {
+                                speakerViewModel.play()
+                            }
+                          },
+                enabled = true
+            ) {
+                Text(text = if (speakerUi.status != "stopped") "Stop" else "Play")
             }
         }
 
@@ -188,16 +203,24 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
         // ...
 
         // Barra de volumen
-        val volume = speakerUi.volume ?: 0
 
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Button(onClick = {  }) {
+            Button(onClick = { speakerViewModel.setVolume(speakerUi.volume?.minus(1) ?: 0 ) },
+                enabled = speakerUi.status != "stopped") {
                 Text(text = "-")
             }
 
-            Slider(value = volume.toFloat(), onValueChange = {  }, modifier = Modifier.weight(1f))
+            Slider(
+                value = speakerUi.volume?.toFloat() ?: 0f,
+                onValueChange = { value ->
+                    speakerViewModel.setVolume(value.toInt())
+                },
+                valueRange = 0f..10f,
+                modifier = Modifier.weight(1f)
+            )
 
-            Button(onClick = {  }) {
+            Button(onClick = { speakerViewModel.setVolume(speakerUi.volume?.plus(1) ?: 10) },
+                enabled = speakerUi.status != "stopped") {
                 Text(text = "+")
             }
         }
