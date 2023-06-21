@@ -31,7 +31,8 @@
     <!-- string de curtain -->
 
     <!-- string de speaker -->
-    <string name="GenreSelector">Selecciona gènero</string>
+    <string name="GenreSelector">Selecciona género</string>
+    <string name="Playlist">Lista de Reproducción</string>
     <!-- string de lightbulb -->
     <string name="setB">Establecer brillo</string>
     <string name="bright">Nivel de brillo</string>

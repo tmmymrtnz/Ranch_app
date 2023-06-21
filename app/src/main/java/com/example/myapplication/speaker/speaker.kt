@@ -2,6 +2,7 @@ package com.example.myapplication.speaker
 
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
@@ -33,6 +35,9 @@ import androidx.compose.foundation.verticalScroll
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Slider
 
@@ -40,12 +45,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.example.myapplication.R
 import com.example.myapplication.data.network.model.Song
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -63,12 +71,25 @@ fun speakerScreen(id: String, speakerViewModel: SpeakerViewModel = viewModel()) 
                 .height(IntrinsicSize.Max)
                 .padding(2.dp).verticalScroll(rememberScrollState())
         ){
-            Text(
-                text = speakerUi.name.toString(),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.scrim,
-                modifier = Modifier.padding(16.dp)
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.speaker),
+                    contentDescription = null,
+                    modifier = Modifier.size(88.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
+                )
+                Text(
+                    text = speakerUi.name.toString(),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.scrim,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Divider(color = MaterialTheme.colorScheme.secondary)
 
             SpeakerCard(speakerUi = speakerUi, speakerViewModel = speakerViewModel,
             )
@@ -147,6 +168,8 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
         // Estado (playing o paused)
         Text(text = speakerUi.status ?: "", fontSize = 16.sp)
 
+        Spacer(modifier = Modifier.height(8.dp))
+
         // Barra de reproducción
         val progress = speakerUi.currentSong?.progress ?: 0
         val duration = speakerUi.currentSong?.duration ?: 0
@@ -155,22 +178,29 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
         val progressPercentage = if (duration != 0) (progress.toFloat() / duration.toFloat()) else 0f
 
         LinearProgressIndicator(progress = progressPercentage, modifier = Modifier.fillMaxWidth())
-
+        Spacer(modifier = Modifier.height(4.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(text = progressText, fontSize = 14.sp)
             Text(text = durationText, fontSize = 14.sp)
         }
-
+        Spacer(modifier = Modifier.height(8.dp))
         // Botones
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-            Button(
+
+            IconButton(
                 onClick = { speakerViewModel.previousSong() },
-                enabled = speakerUi.status != "stopped"
+                enabled = speakerUi.status != "stopped",
+                modifier = Modifier.size(40.dp)
             ) {
-                Text(text = "Previous")
+                Icon(
+                    painter = painterResource(R.drawable.baseline_fast_rewind_white_24dp),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.size(24.dp)
+                )
             }
 
-            Button(
+            IconButton(
                 onClick = {
                     if (speakerUi.status == "playing") {
                         speakerViewModel.pause()
@@ -178,42 +208,72 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
                         speakerViewModel.resume()
                     }
                 },
-                enabled = speakerUi.status != "stopped"
+                enabled = speakerUi.status != "stopped",
+                modifier = Modifier.size(40.dp)
             ) {
-                Text(text = if (speakerUi.status == "playing") "Pause" else "Play")
+                Icon(
+
+                    painter = if (speakerUi.status == "playing") painterResource(R.drawable.baseline_pause_white_24dp) else painterResource(R.drawable.baseline_play_arrow_white_24dp),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.size(24.dp)
+                )
             }
 
-            Button(
+            IconButton(
                 onClick = { speakerViewModel.nextSong() },
-                enabled = speakerUi.status != "stopped"
+                enabled = speakerUi.status != "stopped",
+                modifier = Modifier.size(40.dp)
             ) {
-                Text(text = "Next")
+                Icon(
+                    painter = painterResource(R.drawable.baseline_fast_forward_white_24dp),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.size(24.dp)
+                )
             }
 
-            Button(
+            IconButton(
                 onClick = { if (speakerUi.status == "playing") {
-                            speakerViewModel.stop()
-                            } else if (speakerUi.status == "stopped") {
-                                speakerViewModel.play()
-                            }
-                          },
-                enabled = true
+                    speakerViewModel.stop()
+                } else if (speakerUi.status == "stopped") {
+                    speakerViewModel.play()
+                }
+                },
+                enabled = true,
+                modifier = Modifier.size(40.dp)
             ) {
-                Text(text = if (speakerUi.status != "stopped") "Stop" else "Play")
+                Icon(
+
+                    painter =  painterResource(R.drawable.baseline_stop_white_24dp),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.size(24.dp)
+                )
             }
+
         }
 
-        // Selector de opciones
-        // ...
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         // Barra de volumen
 
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Button(onClick = { speakerViewModel.setVolume(speakerUi.volume?.minus(1) ?: 0 ) },
-                enabled = speakerUi.status != "stopped") {
-                Text(text = "-")
-            }
 
+
+            IconButton(
+                onClick = { speakerViewModel.setVolume(speakerUi.volume?.minus(1) ?: 0 ) },
+                enabled = speakerUi.status != "stopped",
+                modifier = Modifier.size(40.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.baseline_volume_down_white_24dp),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
             Slider(
                 value = speakerUi.volume?.toFloat() ?: 0f,
                 onValueChange = { value ->
@@ -222,11 +282,19 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
                 valueRange = 0f..10f,
                 modifier = Modifier.weight(1f)
             )
-
-            Button(onClick = { speakerViewModel.setVolume(speakerUi.volume?.plus(1) ?: 10) },
-                enabled = speakerUi.status != "stopped") {
-                Text(text = "+")
+            IconButton(
+                onClick =  { speakerViewModel.setVolume(speakerUi.volume?.plus(1) ?: 10) },
+                    enabled = speakerUi.status != "stopped",
+                modifier = Modifier.size(40.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.baseline_volume_up_white_24dp),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.size(24.dp)
+                )
             }
+
         }
     }
 }

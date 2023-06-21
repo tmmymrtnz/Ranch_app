@@ -45,7 +45,7 @@
 
     <!-- string de speaker -->
     <string name="GenreSelector">Select genre</string>
-
+    <string name="Playlist">Playlist</string>
     <!-- string de lightbulb -->
     <string name="setB">Set Brightness</string>
     <string name="bright">Brightness Level</string>
