@@ -313,8 +313,8 @@ fun BotNavBar(
           onClick = {onItemClick(item)},
               colors = NavigationBarItemDefaults.colors(
                   selectedIconColor = MaterialTheme.colorScheme.secondary,
-                  unselectedIconColor = MaterialTheme.colorScheme.tertiary,
-                  indicatorColor = MaterialTheme.colorScheme.tertiary
+                  unselectedIconColor = MaterialTheme.colorScheme.tertiaryContainer,
+                  indicatorColor = MaterialTheme.colorScheme.tertiaryContainer
               ),
           icon = {
               Column(horizontalAlignment= CenterHorizontally) {

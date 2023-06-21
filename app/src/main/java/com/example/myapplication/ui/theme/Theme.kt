@@ -22,7 +22,8 @@ private val DarkColorScheme = darkColorScheme(
     secondary = Color.White,
     tertiary = Blue100,
     background = Blue70,
-    scrim = Color.White  //lo uso como color del texto
+    scrim = Color.White,  //lo uso como color del texto
+    tertiaryContainer = Blue100  // para la nav bar
 
 )
 
@@ -31,44 +32,17 @@ private val LightColorScheme = lightColorScheme(
     secondary = Blue100,
     tertiary = Blue70,
     background = Color.White,
-    scrim = Color.Black  //lo uso como color del texto
+    scrim = Color.Black,  //lo uso como color del texto
+    tertiaryContainer = Color.White  // para la nav bar
 
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
 )
 
 @Composable
 fun MyApplicationTheme(
-    darkTheme: Boolean = true,
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-
-            if (isSystemInDarkTheme()) DarkColorScheme else LightColorScheme
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-        }
-    }
+    val colorScheme = if (isSystemInDarkTheme()) DarkColorScheme else LightColorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,
@@ -76,3 +50,6 @@ fun MyApplicationTheme(
         content = content
     )
 }
+
+
+
