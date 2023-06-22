@@ -59,6 +59,12 @@
     <string name="is_on">está encendido</string>
     <string name="is_off">está apagado</string>
 
+
+    <string name="closed">cerrado</string>
+    <string name="opened">abierto</string>
+    <string name="openLabel">Abrir</string>
+    <string name="closeLabel">Cerrar</string>
+    <string name="blindSliderTitle">Establecer Nivel</string>
     <string name="devicesHeader">Dispositivos</string>
 
     <string name="routinesHeader">Mis Rutinas</string>

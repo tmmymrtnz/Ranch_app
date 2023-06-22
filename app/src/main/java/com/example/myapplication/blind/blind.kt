@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,16 +15,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,95 +32,73 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
 import com.example.myapplication.TemperatureSlider
 import com.example.myapplication.ui.theme.MyApplicationTheme
-import kotlinx.coroutines.launch
 
 @Composable
 fun BlindScreen(id: String, blindViewModel: BlindViewModel = viewModel()) {
 
     val blindUi by blindViewModel.uiState.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
-
     blindViewModel.setId(id)
 
-    val opening = stringResource(id = R.string.opening)
-    val closing = stringResource(id = R.string.closing)
-    val changedLevel = stringResource(id = R.string.changedLevel)
-
-    Scaffold(snackbarHost = { SnackbarHost(hostState = snackbarHostState) }) { paddingValues ->
-
-        Box(
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background)
+    ) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.background)
-                .padding(paddingValues) // Use the padding here
+                .padding(16.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.curtains),
-                        contentDescription = null,
-                        modifier = Modifier.size(88.dp),
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
-                    )
-                    Text(
-                        text = blindUi.device?.result?.name.toString(),
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.scrim,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-                Divider(color = MaterialTheme.colorScheme.secondary)
-
-                SwitchWithLabelsTogable(
-                    checked = blindUi.blindOn,
-                    onCheckedChange = { checked ->
-                        blindViewModel.switchBlind(checked)
-                        scope.launch {
-                            if (checked) {
-                                snackbarHostState.showSnackbar("${blindUi.device?.result?.name} $opening")
-                            } else {
-                                snackbarHostState.showSnackbar("${blindUi.device?.result?.name} $closing")
-                            }
-                        }
-                    },
-                    labelOn = "Open",
-                    labelOff = "Close",
-                    blindUi = blindUi
+                Image(
+                    painter = painterResource(R.drawable.curtains),
+                    contentDescription = null,
+                    modifier = Modifier.size(88.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
                 )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                TemperatureSlider(
-                    title = "Set level",
-                    minValue = 0,
-                    maxValue = 100,
-                    currentTemperature = blindUi.blindLevel,
-                    onTemperatureChange = { value ->
-                        if (value != blindUi.blindLevel) {
-                            blindViewModel.setLevel(value)
-                            scope.launch {
-                                snackbarHostState.showSnackbar("$changedLevel $value%")
-                            }
-                        }
-                    },
-                    unit = "%"
+                Text(
+                    text = blindUi.device?.result?.name.toString(),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.scrim,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Add your blinds controls here, such as buttons and sliders
-
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
+            Divider(color = MaterialTheme.colorScheme.secondary)
+
+            SwitchWithLabelsTogable(
+                checked = blindUi.blindOn,
+                onCheckedChange = { checked ->
+                    blindViewModel.switchBlind(checked)
+                },
+                labelOn = stringResource(id = R.string.openLabel),
+                labelOff = stringResource(id = R.string.closeLabel),
+                blindUi = blindUi
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            TemperatureSlider(
+                title =  stringResource(id = R.string.blindSliderTitle),
+                minValue = 0,
+                maxValue = 100,
+                currentTemperature = blindUi.blindLevel,
+                onTemperatureChange = { value ->
+                    if(value != blindUi.blindLevel){
+                        blindViewModel.setLevel(value)
+                    }
+                },
+                unit = "%"
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Add your blinds controls here, such as buttons and sliders
+
         }
     }
 }
@@ -144,6 +118,15 @@ fun SwitchWithLabelsTogable(
     } else {
         Color.DarkGray
     }
+
+    val statusText = when (blindUi.device?.result?.state?.status.toString()) {
+        "opened" -> stringResource(id = R.string.opened)
+        "closed" -> stringResource(id = R.string.closed)
+        "opening" -> stringResource(id = R.string.opening)
+        "closing" -> stringResource(id = R.string.closing)
+        else -> ""
+    }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(horizontal = 16.dp)
@@ -158,8 +141,26 @@ fun SwitchWithLabelsTogable(
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(text = labelOn, color = textColor)
+
+        Spacer(modifier = Modifier.weight(1f))
+        Box(
+            modifier = Modifier
+                .width(IntrinsicSize.Max)
+                .height(32.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.tertiary,
+                    shape = MaterialTheme.shapes.small
+                )
+        ) {
+            Text(
+                text = statusText,
+                color = MaterialTheme.colorScheme.scrim,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+            )
+        }
     }
 }
+
 
 @Preview
 @Composable

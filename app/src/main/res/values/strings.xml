@@ -31,6 +31,15 @@
     <string name="changedHeatMode">Heat Mode has been set to</string>
     <string name="changedConvectionMode">Convection Mode has been set to</string>
 
+    <!-- string de curtain -->
+    <string name="openLabel">Open</string>
+    <string name="closeLabel">Close</string>
+
+    <string name="closed">closed</string>
+    <string name="blindSliderTitle">Set level</string>
+    <string name="opened">opened</string>
+
+
     <!-- string de fridge-->
     <string name="setFTemmp">Set Freezer temperature</string>
     <string name="Fmode">Fridge Mode</string>
@@ -47,6 +56,7 @@
     <string name="opening">is opening</string>
     <string name="closing">is closing</string>
     <string name="changedLevel">Level has been set to</string>
+
 
     <!-- string de speaker -->
     <string name="GenreSelector">Select genre</string>
