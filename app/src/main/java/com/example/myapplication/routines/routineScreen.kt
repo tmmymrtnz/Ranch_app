@@ -44,6 +44,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
 import com.example.myapplication.routines.RoutineViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -53,6 +54,8 @@ fun RoutinesScreen(
     routineViewModel: RoutineViewModel = viewModel()
 ) {
     val routineUi by routineViewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         routineViewModel.fetchRoutines()
@@ -60,46 +63,51 @@ fun RoutinesScreen(
 
     val routines = routineViewModel.convertRoutinesResponse(routineUi.routines)
     MyApplicationTheme {
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.background)
-                .padding(16.dp)
-        ) {
-            Column {
+        Scaffold (
+            snackbarHost = { SnackbarHost(snackbarHostState) }){paddingValues ->
+            Box(
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .padding(paddingValues)
+            ) {
+                Column {
 
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.clock_outline),
-                        contentDescription = null,
-                        modifier = Modifier.size(88.dp),
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
-                    )
-                    Text(
-                        text = stringResource(id = R.string.routinesHeader),
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.scrim,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Divider(color = MaterialTheme.colorScheme.secondary)
-
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = 170.dp)
-                ) {
-                    items(routines.entries.toList().size) { entry ->
-
-                        RoutineCardComponent(
-                            routineViewModel=routineViewModel,
-                            routine = routines.entries.toList()[entry].key,
-                            devicesByRoom = routines.entries.toList()[entry].value,
-                            modifier = modifier
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.clock_outline),
+                            contentDescription = null,
+                            modifier = Modifier.size(88.dp),
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondary)
                         )
+                        Text(
+                            text = stringResource(id = R.string.routinesHeader),
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.scrim,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Divider(color = MaterialTheme.colorScheme.secondary)
+
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(minSize = 170.dp)
+                    ) {
+                        items(routines.entries.toList().size) { entry ->
+
+                            RoutineCardComponent(
+                                routineViewModel=routineViewModel,
+                                routine = routines.entries.toList()[entry].key,
+                                devicesByRoom = routines.entries.toList()[entry].value,
+                                snackbarHostState = snackbarHostState,
+                                scope = scope,
+                                modifier = modifier
+                            )
+                        }
                     }
                 }
             }
@@ -111,77 +119,74 @@ fun RoutinesScreen(
 fun RoutineCardComponent(routineViewModel: RoutineViewModel,
     routine: RoutineViewModel.RoutineAux,
     devicesByRoom: Map<String, List<RoutineViewModel.DeviceAux>>,
+    snackbarHostState: SnackbarHostState,
+    scope: CoroutineScope,
     modifier: Modifier = Modifier
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
 
     val routineText = stringResource(id = R.string.execution)
     val executed = stringResource(id = R.string.executed)
 
-    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) {paddingValues ->
-        Box(
-            modifier = modifier
-                .padding(10.dp)
-                .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
-                .padding(paddingValues)
+    Box(
+        modifier = modifier
+            .padding(10.dp)
+            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                Text(
+                    text = routine.name,
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.scrim
+                    ),
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(
+                    onClick = {
+                        routineViewModel.execute(routine.id)
+                        scope.launch {
+                            snackbarHostState.showSnackbar("$routineText ${routine.name} $executed")
+                        }
+                              },
+                    modifier = Modifier.size(40.dp)
                 ) {
-                    Text(
-                        text = routine.name,
-                        style = TextStyle(
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.scrim
-                        ),
-                        modifier = Modifier.weight(1f)
+                    Icon(
+                        painter = painterResource(R.drawable.play_circle),
+                        contentDescription = "Play Button",
+                        tint = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.size(24.dp)
                     )
-                    IconButton(
-                        onClick = {
-                            routineViewModel.execute(routine.id)
-                            scope.launch {
-                                snackbarHostState.showSnackbar("$routineText ${routine.name} $executed")
-                            }
-                                  },
-                        modifier = Modifier.size(40.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.play_circle),
-                            contentDescription = "Play Button",
-                            tint = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
                 }
+            }
 
-                devicesByRoom.forEach { (roomName, devices) ->
+            devicesByRoom.forEach { (roomName, devices) ->
+                Text(
+                    text = roomName,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.scrim
+                    ),
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+
+                devices.forEach { device ->
                     Text(
-                        text = roomName,
+                        text = "- ${device.deviceName} ${device.actionName}",
                         style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.scrim
                         ),
-                        modifier = Modifier.padding(bottom = 4.dp)
+                        modifier = Modifier.padding(start = 16.dp, bottom = 4.dp)
                     )
-
-                    devices.forEach { device ->
-                        Text(
-                            text = "- ${device.deviceName} ${device.actionName}",
-                            style = TextStyle(
-                                fontSize = 14.sp,
-                                color = MaterialTheme.colorScheme.scrim
-                            ),
-                            modifier = Modifier.padding(start = 16.dp, bottom = 4.dp)
-                        )
-                    }
                 }
             }
         }

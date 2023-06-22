@@ -82,6 +82,8 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 
 class MainActivity : ComponentActivity() {
@@ -161,22 +163,22 @@ class MainActivity : ComponentActivity() {
                                 BotNavBar(
                                     items = listOf(
                                         BotNavItem(
-                                            name="Home",
+                                            name= stringResource(id = R.string.home),
                                             route= "home",
                                             icon = painterResource(id = R.drawable.home),
                                         ),
                                         BotNavItem(
-                                            name="Devices",
+                                            name= stringResource(id = R.string.devices),
                                             route= "devices",
                                             icon = painterResource(id = R.drawable.devices),
                                         ),
                                         BotNavItem(
-                                            name="Routines",
+                                            name= stringResource(id = R.string.routines),
                                             route= "routines",
                                             icon = painterResource(id = R.drawable.clock_outline),
                                         ),
                                         BotNavItem(
-                                            name="Settings",
+                                            name= stringResource(id = R.string.settings),
                                             route= "settings",
                                             icon = painterResource(id = R.drawable.cog_outline),
                                         ),
@@ -400,75 +402,84 @@ fun MyScreenComponent(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val uiState by homeViewModel.uiState.collectAsState()
+    val groupedDevices = uiState.devices?.result?.groupBy { it.room?.name }
 
     LaunchedEffect(Unit){
         homeViewModel.fetchDevices()
     }
 
-    Scaffold(snackbarHost = { SnackbarHost(hostState = snackbarHostState) }) { paddingValues ->
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(paddingValues) // Use the padding here
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { paddingValues ->
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(uiState.isLoading),
+            onRefresh = {
+                homeViewModel.fetchDevices()
+            },
+            modifier = modifier.padding(paddingValues)
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier.padding(16.dp),
                 ) {
-                    Image(
-                        painter = painterResource(R.drawable.logo_notext),
-                        contentDescription = null,
-                        modifier = Modifier.size(88.dp)
-                    )
-                    Text(
-                        text = stringResource(id = R.string.app_name),
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.scrim,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Divider(color = MaterialTheme.colorScheme.secondary)
-                Spacer(modifier = Modifier.height(8.dp))
-                val groupedDevices = uiState.devices?.result?.groupBy { it.room?.name }
-                LazyColumn(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
-                ){
-                    groupedDevices?.forEach { (room, devices) ->
-                        item {
-                            Text(
-                                text = room ?: "Not in room",
-                                style = MaterialTheme.typography.headlineSmall,
-                                color = MaterialTheme.colorScheme.scrim,
-                                modifier = Modifier.padding(start = 8.dp)
-                            )
-                            Divider(color = MaterialTheme.colorScheme.secondary)
-                            Spacer(modifier = Modifier.height(8.dp))
-                            LazyRow {
-                                items(items = devices){device ->
-                                    RoundedCardComponent(
-                                        title = device.name ?: "",
-                                        result = device,
-                                        icon = painterResource(id =
-                                        when (device.type?.name.toString()) {
-                                            "fridge" -> R.drawable.fridge
-                                            "speaker" -> R.drawable.speaker
-                                            "oven" -> R.drawable.stove
-                                            "lamp" -> R.drawable.lightbulb
-                                            "blinds" -> R.drawable.curtains
-                                            else -> R.drawable.fridge
-                                        }),
-                                        navController =  navController
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.logo_notext),
+                            contentDescription = null,
+                            modifier = Modifier.size(88.dp)
+                        )
+                        Text(
+                            text = stringResource(id = R.string.app_name),
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.scrim,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Divider(color = MaterialTheme.colorScheme.secondary)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    LazyColumn(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ){
+                        groupedDevices?.forEach { (room, devices) ->
+                            item {
+                                Text(
+                                    text = room ?: "Not in room",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    color = MaterialTheme.colorScheme.scrim,
+                                    modifier = Modifier.padding(start = 8.dp)
+                                )
+                                Divider(color = MaterialTheme.colorScheme.secondary)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                LazyRow {
+                                    items(items = devices){device ->
+                                        RoundedCardComponent(
+                                            title = device.name ?: "",
+                                            result = device,
+                                            icon = painterResource(id =
+                                            when (device.type?.name.toString()) {
+                                                "fridge" -> R.drawable.fridge
+                                                "speaker" -> R.drawable.speaker
+                                                "oven" -> R.drawable.stove
+                                                "lamp" -> R.drawable.lightbulb
+                                                "blinds" -> R.drawable.curtains
+                                                else -> R.drawable.fridge
+                                            }),
+                                            navController =  navController
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                    }
                                 }
+                                Spacer(modifier = Modifier.height(8.dp))
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
                         }
                     }
                 }

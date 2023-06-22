@@ -5,6 +5,11 @@
     <string name="lightBulb">Light Bulb</string>
     <string name="curtain">Curtain</string>
     <string name="stove">Oven</string>
+
+    <string name="home">Home</string>
+    <string name="devices">Devices</string>
+    <string name="routines">Routines</string>
+    <string name="settings">Settings</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="mydevices">My Devices</string>
