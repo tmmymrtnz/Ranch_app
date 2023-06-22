@@ -274,7 +274,7 @@ class SpeakerViewModel: ViewModel() {
             _uiState.update { currentState ->
                 currentState.copy(currentGenre = genre)
             }
-            getPlayList(speakerId)
+
         }
     }
 

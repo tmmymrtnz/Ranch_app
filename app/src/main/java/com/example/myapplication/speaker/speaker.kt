@@ -69,7 +69,8 @@ fun speakerScreen(id: String, speakerViewModel: SpeakerViewModel = viewModel()) 
         Column(
             modifier = Modifier
                 .height(IntrinsicSize.Max)
-                .padding(2.dp).verticalScroll(rememberScrollState())
+                .padding(2.dp)
+                .verticalScroll(rememberScrollState())
         ){
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -99,7 +100,8 @@ fun speakerScreen(id: String, speakerViewModel: SpeakerViewModel = viewModel()) 
                 genres = speakerUi.genres,
                 onModeSelected = { genre ->
                     speakerViewModel.setGenre(genre)
-                }
+                },
+                speakerUi = speakerUi
             )
 
             PlaylistCard(playlist = speakerUi.playlist ?: emptyList())
@@ -123,15 +125,27 @@ fun PlaylistCard(playlist: List<Song>) {
             .padding(16.dp)
             .height(150.dp)
     ) {
-        Text(
-            text = "Playlist",
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp),
-            color = MaterialTheme.colorScheme.scrim,
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Icon(painter = painterResource(R.drawable.baseline_queue_music_white_24dp),
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.size(24.dp))
+            Text(
+                text = stringResource(R.string.Playlist),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp),
+                color = MaterialTheme.colorScheme.scrim,
+            )
+        }
+
         Column(
-           modifier = Modifier.padding(2.dp).verticalScroll(rememberScrollState())
+           modifier = Modifier
+               .padding(2.dp)
+               .verticalScroll(rememberScrollState())
         ) {
             playlist.forEach{song ->
                 SongItem(song)
@@ -146,10 +160,39 @@ fun SongItem(song: Song) {
     Column(
         modifier = Modifier.padding(5.dp)
     ){
-        Text(text = song.title ?: "", style = MaterialTheme.typography.headlineSmall)
-        Text(text = song.artist ?: "", style = MaterialTheme.typography.bodySmall)
-        Text(text = song.album ?: "", style = MaterialTheme.typography.bodySmall)
-        Text(text = formatTime(song.duration ?: 0), style = MaterialTheme.typography.bodySmall)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Icon(painter = painterResource(R.drawable.baseline_music_note_white_24dp),
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.size(24.dp))
+            Text(text = song.title ?: "", style = MaterialTheme.typography.headlineSmall)
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Icon(painter = painterResource(R.drawable.baseline_person_white_24dp),
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.size(24.dp))
+            Text(text = song.artist ?: "", style = MaterialTheme.typography.bodySmall)
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Icon(painter = painterResource(R.drawable.baseline_album_white_24dp),
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.size(24.dp))
+            Text(text = (song.album + " - ") , style = MaterialTheme.typography.bodySmall)
+            Text(text = formatTime(song.duration ?: 0), style = MaterialTheme.typography.bodySmall)
+        }
+
+
     }
 }
 
@@ -158,12 +201,37 @@ fun SongItem(song: Song) {
 @Composable
 fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
     Column(modifier = Modifier.padding(16.dp) ) {
-        // Título de la canción
-        Text(text = speakerUi.currentSong?.title ?: "No song playing", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-
-        // Nombre del artista y álbum
-        Text(text = speakerUi.currentSong?.artist ?: "", fontSize = 16.sp)
-        Text(text = speakerUi.currentSong?.album ?: "", fontSize = 16.sp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Icon(painter = painterResource(R.drawable.baseline_music_note_white_24dp),
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.size(24.dp))
+            Text(text = speakerUi.currentSong?.title ?: "No song playing", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Icon(painter = painterResource(R.drawable.baseline_person_white_24dp),
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.size(24.dp))
+            Text(text = speakerUi.currentSong?.artist ?: "", fontSize = 16.sp)
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Icon(painter = painterResource(R.drawable.baseline_album_white_24dp),
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.size(24.dp))
+            Text(text = speakerUi.currentSong?.album +" - ", fontSize = 16.sp)
+            Text(text = formatTime(speakerUi.currentSong?.duration ?: 0), fontSize = 16.sp, style = MaterialTheme.typography.bodySmall)
+        }
 
         // Estado (playing o paused)
         Text(text = speakerUi.status ?: "", fontSize = 16.sp)
@@ -308,14 +376,15 @@ fun formatTime(timeInSeconds: Int): String {
 
 
 @Composable
-fun GenreSelector(
+fun GenreSelector(speakerUi: SpeakerUiState,
     selectedGenre: String?,
     genres: List<String>,
     onModeSelected: (String) -> Unit
 ) {
     Box(
         modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.tertiary, RoundedCornerShape(20.dp)) .height(200.dp)
+            .background(color = MaterialTheme.colorScheme.tertiary, RoundedCornerShape(20.dp))
+            .height(200.dp)
     ) {
         Column(
             modifier = Modifier
@@ -331,6 +400,7 @@ fun GenreSelector(
             )
             Spacer(modifier = Modifier.height(16.dp))
             LazyVerticalGrid(
+
                 columns = GridCells.Fixed(3),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
             ) {
@@ -338,7 +408,8 @@ fun GenreSelector(
                     GenreButton(
                         genre = genres[genre],
                         isSelected = genres[genre] == selectedGenre,
-                        onModeSelected = { onModeSelected(it) }
+                        onModeSelected = { onModeSelected(it) },
+                        speakerUi = speakerUi
                     )
                 }
             }
@@ -350,6 +421,7 @@ fun GenreSelector(
 
 @Composable
 fun GenreButton(
+    speakerUi: SpeakerUiState,
     genre: String,
     isSelected: Boolean,
     onModeSelected: (String) -> Unit
@@ -358,6 +430,7 @@ fun GenreButton(
     val textColor = if (isSelected) MaterialTheme.colorScheme.scrim else Color.Gray
 
     Button(
+        enabled = speakerUi.status=="stopped",
         onClick = { onModeSelected(genre) },
         colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
         contentPadding = PaddingValues(16.dp)
