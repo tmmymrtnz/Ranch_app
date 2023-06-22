@@ -5,6 +5,11 @@
     <string name="lightBulb">Light Bulb</string>
     <string name="curtain">Curtain</string>
     <string name="stove">Oven</string>
+
+    <string name="home">Home</string>
+    <string name="devices">Devices</string>
+    <string name="routines">Routines</string>
+    <string name="settings">Settings</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="mydevices">My Devices</string>
@@ -26,6 +31,15 @@
     <string name="changedHeatMode">Heat Mode has been set to</string>
     <string name="changedConvectionMode">Convection Mode has been set to</string>
 
+    <!-- string de curtain -->
+    <string name="openLabel">Open</string>
+    <string name="closeLabel">Close</string>
+
+    <string name="closed">closed</string>
+    <string name="blindSliderTitle">Set level</string>
+    <string name="opened">opened</string>
+
+
     <!-- string de fridge-->
     <string name="setFTemmp">Set Freezer temperature</string>
     <string name="Fmode">Fridge Mode</string>
@@ -42,6 +56,7 @@
     <string name="opening">is opening</string>
     <string name="closing">is closing</string>
     <string name="changedLevel">Level has been set to</string>
+
 
     <!-- string de speaker -->
     <string name="GenreSelector">Select genre</string>

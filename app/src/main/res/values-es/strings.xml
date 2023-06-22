@@ -1,51 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Rancho</string>
-    <string name="fridge">Nevera</string>
-    <string name="speaker">Altavoz</string>
-    <string name="lightBulb">Bombilla</string>
+    <string name="fridge">Heladera</string>
+    <string name="speaker">Parlante</string>
+    <string name="lightBulb">Lámpara</string>
     <string name="curtain">Cortina</string>
     <string name="stove">Horno</string>
-    <!-- TODO: Eliminar o cambiar este texto de marcador de posición -->
+
+    <string name="home">Inicio</string>
+    <string name="devices">Dispositivos</string>
+    <string name="routines">Rutinas</string>
+    <string name="settings">Ajustes</string>
     <string name="hello_blank_fragment">Hola fragmento en blanco</string>
     <string name="mydevices">Mis dispositivos</string>
-    <!-- string de oven -->
+
     <string name="convMode">Establecer modo de convección</string>
     <string name="grillMode">Establecer modo de parrilla</string>
     <string name="heatMode">Establecer modo de calor</string>
     <string name="setTemmp">Establecer temperatura</string>
-    <string name="normal">Normal</string>
-    <string name="econmic">Económico</string>
-    <string name="offf">Apagado</string>
-    <string name="onn">Encendido</string>
-    <string name="complete">Completo</string>
-    <string name="conventional">Convencional</string>
-    <string name="top">Arriba</string>
-    <string name="bottom">Abajo</string>
-    <!-- string de fridege-->
-    <string name="setFTemmp">Establecer temperatura del congelador</string>
-    <string name="Fmode">Modo nevera</string>
-    <string name="defaul">Por defecto</string>
-    <string name="vacation">Vacaciones</string>
-    <string name="party">Fiesta</string>
-    <!-- string de curtain -->
+    <string name="normal">normal</string>
+    <string name="econmic">económico</string>
+    <string name="offf">apagado</string>
+    <string name="onn">encendido</string>
+    <string name="complete">completo</string>
+    <string name="conventional">convencional</string>
+    <string name="top">arriba</string>
+    <string name="bottom">abajo</string>
+    <string name="changedGrillMode">El modo de parrilla ha sido establecido en</string>
+    <string name="changedHeatMode">El modo de calor ha sido establecido en</string>
+    <string name="changedConvectionMode">El modo de convección ha sido establecido en</string>
 
-    <!-- string de speaker -->
-    <string name="GenreSelector">Selecciona género</string>
-    <string name="Playlist">Lista de Reproducción</string>
-    <!-- string de lightbulb -->
+    <string name="setFTemmp">Establecer temperatura del freezer</string>
+    <string name="Fmode">Modo del refrigerador</string>
+    <string name="defaul">predeterminado</string>
+    <string name="vacation">vacaciones</string>
+    <string name="party">fiesta</string>
+    <string name="defaultMode">El modo ha sido establecido en default</string>
+    <string name="vacationMode">El modo ha sido establecido en vacaciones</string>
+    <string name="partyMode">El modo ha sido establecido en fiesta</string>
+    <string name="changedTemp">La temperatura ha sido establecida en</string>
+    <string name="changedTempF">La temperatura del freezer ha sido establecida en</string>
+
+    <string name="opening">se está abriendo</string>
+    <string name="closing">se está cerrando</string>
+    <string name="changedLevel">El nivel ha sido establecido en</string>
+
+    <string name="GenreSelector">Seleccionar género</string>
+    <string name="Playlist">Lista de reproducción</string>
+
     <string name="setB">Establecer brillo</string>
     <string name="bright">Nivel de brillo</string>
-    <string name="pickColor">Elige color</string>
+    <string name="pickColor">Elegir color</string>
     <string name="r">Rojo</string>
     <string name="g">Verde</string>
     <string name="b">Azul</string>
+    <string name="changed_color">Se ha establecido un nuevo color</string>
+    <string name="changed_brightness">El brillo ha sido establecido en</string>
+    <string name="is_on">está encendido</string>
+    <string name="is_off">está apagado</string>
 
-    <!-- string de devices -->
+
+    <string name="closed">cerrado</string>
+    <string name="opened">abierto</string>
+    <string name="openLabel">Abrir</string>
+    <string name="closeLabel">Cerrar</string>
+    <string name="blindSliderTitle">Establecer Nivel</string>
     <string name="devicesHeader">Dispositivos</string>
 
-    <!-- string de routines -->
     <string name="routinesHeader">Mis Rutinas</string>
-    <string name="eventListen">Error en el ojedor de eventos!</string>
-    <string name="message"> %1$s fue cambiado</string>
+    <string name="eventListen">¡Error en el oyente de eventos!</string>
+    <string name="message"> El %1$s ha sido actualizado</string>
+    <string name="execution">La rutina</string>
+    <string name="executed">ha sido ejecutada</string>
 </resources>

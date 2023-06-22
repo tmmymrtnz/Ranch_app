@@ -116,6 +116,7 @@ class EventService : Service() {
                     }
                 }
             }
+            connection.disconnect()
             stream.close()
             Log.d(TAG,"new events found")
             return eventList
