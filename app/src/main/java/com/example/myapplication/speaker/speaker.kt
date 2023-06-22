@@ -215,23 +215,26 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ){
-            Icon(painter = painterResource(R.drawable.baseline_person_white_24dp),
+            if(speakerUi.status != "stopped"){ Icon(painter = painterResource(R.drawable.baseline_person_white_24dp),
                 contentDescription = "",
                 tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.size(24.dp))
-            Text(text = speakerUi.currentSong?.artist ?: "", fontSize = 16.sp)
+            Text(text = speakerUi.currentSong?.artist ?: "", fontSize = 16.sp)}
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ){
-            Icon(painter = painterResource(R.drawable.baseline_album_white_24dp),
-                contentDescription = "",
-                tint = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.size(24.dp))
-            Text(text = speakerUi.currentSong?.album +" - ", fontSize = 16.sp)
-            Text(text = formatTime(speakerUi.currentSong?.duration ?: 0), fontSize = 16.sp, style = MaterialTheme.typography.bodySmall)
-        }
+            if(speakerUi.status != "stopped"){
+                Icon(painter = painterResource(R.drawable.baseline_album_white_24dp),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.size(24.dp))
+                Text(text = speakerUi.currentSong?.album +" - " , fontSize = 16.sp)
+                Text(text = formatTime(speakerUi.currentSong?.duration ?: 0), fontSize = 16.sp, style = MaterialTheme.typography.bodySmall)
+
+            }
+             }
 
         // Estado (playing o paused)
         Text(text = speakerUi.status ?: "", fontSize = 16.sp)
@@ -302,9 +305,9 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
             }
 
             IconButton(
-                onClick = { if (speakerUi.status == "playing") {
+                onClick = { if (speakerUi.status != "stopped") {
                     speakerViewModel.stop()
-                } else if (speakerUi.status == "stopped") {
+                } else  {
                     speakerViewModel.play()
                 }
                 },

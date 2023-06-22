@@ -221,7 +221,7 @@ class SpeakerViewModel: ViewModel() {
     fun stop() {
         val actionName = "stop"
         doAction(speakerId, actionName, emptyList())
-        if(_uiState.value.status == "playing"){
+        if(_uiState.value.status != "stopped"){
             _uiState.update { currentState ->
                 currentState.copy(status = "stopped")
             }
