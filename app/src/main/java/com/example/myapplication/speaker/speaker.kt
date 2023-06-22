@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 
 import androidx.compose.material3.Button
@@ -257,7 +258,17 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
         Spacer(modifier = Modifier.height(8.dp))
         // Botones
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-
+            Box(
+                modifier = Modifier.size(48.dp).background(
+                    color = if (speakerUi.status != "stopped") {
+                        MaterialTheme.colorScheme.tertiary
+                    } else {
+                        MaterialTheme.colorScheme.outline // Aplica opacidad cuando el botón está deshabilitado
+                    },
+                    shape = RoundedCornerShape(28.dp)
+                ),
+                contentAlignment = Alignment.Center
+            ) {
             IconButton(
                 onClick = { speakerViewModel.previousSong() },
                 enabled = speakerUi.status != "stopped",
@@ -270,7 +281,19 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
                     modifier = Modifier.size(24.dp)
                 )
             }
+            }
 
+            Box(
+                modifier = Modifier.size(48.dp).background(
+                    color = if (speakerUi.status != "stopped") {
+                        MaterialTheme.colorScheme.tertiary
+                    } else {
+                        MaterialTheme.colorScheme.outline // Aplica opacidad cuando el botón está deshabilitado
+                    },
+                    shape = RoundedCornerShape(28.dp)
+                ),
+                contentAlignment = Alignment.Center
+            ) {
             IconButton(
                 onClick = {
                     if (speakerUi.status == "playing") {
@@ -289,8 +312,18 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
                     tint = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.size(24.dp)
                 )
-            }
-
+            }}
+            Box(
+                modifier = Modifier.size(48.dp).background(
+                    color = if (speakerUi.status != "stopped") {
+                        MaterialTheme.colorScheme.tertiary
+                    } else {
+                        MaterialTheme.colorScheme.outline // Aplica opacidad cuando el botón está deshabilitado
+                    },
+                    shape = RoundedCornerShape(28.dp)
+                ),
+                contentAlignment = Alignment.Center
+            ) {
             IconButton(
                 onClick = { speakerViewModel.nextSong() },
                 enabled = speakerUi.status != "stopped",
@@ -302,8 +335,14 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
                     tint = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.size(24.dp)
                 )
-            }
-
+            }}
+            Box(
+                modifier = Modifier.size(48.dp).background(
+                    color = MaterialTheme.colorScheme.tertiary,
+                    shape = RoundedCornerShape(28.dp)
+                ),
+                contentAlignment = Alignment.Center
+            ) {
             IconButton(
                 onClick = { if (speakerUi.status != "stopped") {
                     speakerViewModel.stop()
@@ -321,7 +360,7 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
                     tint = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.size(24.dp)
                 )
-            }
+            }}
 
         }
 
@@ -332,7 +371,17 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
 
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
 
-
+            Box(
+                modifier = Modifier.size(48.dp).background(
+                    color = if (speakerUi.status != "stopped") {
+                        MaterialTheme.colorScheme.tertiary
+                    } else {
+                        MaterialTheme.colorScheme.outline // Aplica opacidad cuando el botón está deshabilitado
+                    },
+                    shape = RoundedCornerShape(28.dp)
+                ),
+                contentAlignment = Alignment.Center
+            ) {
             IconButton(
                 onClick = { speakerViewModel.setVolume(speakerUi.volume?.minus(1) ?: 0 ) },
                 enabled = speakerUi.status != "stopped",
@@ -344,8 +393,8 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
                     tint = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.size(24.dp)
                 )
-            }
-            Slider(
+            }}
+            Slider(enabled=speakerUi.status != "stopped",
                 value = speakerUi.volume?.toFloat() ?: 0f,
                 onValueChange = { value ->
                     speakerViewModel.setVolume(value.toInt())
@@ -353,18 +402,29 @@ fun SpeakerCard(speakerUi: SpeakerUiState, speakerViewModel: SpeakerViewModel) {
                 valueRange = 0f..10f,
                 modifier = Modifier.weight(1f)
             )
-            IconButton(
-                onClick =  { speakerViewModel.setVolume(speakerUi.volume?.plus(1) ?: 10) },
-                    enabled = speakerUi.status != "stopped",
-                modifier = Modifier.size(40.dp)
+            Box(
+                modifier = Modifier.size(48.dp).background(
+                    color = if (speakerUi.status != "stopped") {
+                        MaterialTheme.colorScheme.tertiary
+                    } else {
+                        MaterialTheme.colorScheme.outline // Aplica opacidad cuando el botón está deshabilitado
+                    },
+                    shape = RoundedCornerShape(28.dp)
+                ),
+                contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.baseline_volume_up_white_24dp),
-                    contentDescription = "",
-                    tint = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+                IconButton(
+                    onClick =  { speakerViewModel.setVolume(speakerUi.volume?.plus(1) ?: 10) },
+                    enabled = speakerUi.status != "stopped",
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.baseline_volume_up_white_24dp),
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }}
 
         }
     }

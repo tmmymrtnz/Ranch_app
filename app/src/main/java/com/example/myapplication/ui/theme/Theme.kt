@@ -23,7 +23,8 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = Blue100,
     background = Blue70,
     scrim = Color.White,  //lo uso como color del texto
-    tertiaryContainer = Blue100  // para la nav bar
+    tertiaryContainer = Blue100,  // para la nav bar
+    outline = Color.Gray
 
 )
 
@@ -33,8 +34,8 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Blue70,
     background = Color.White,
     scrim = Color.Black,  //lo uso como color del texto
-    tertiaryContainer = Color.White  // para la nav bar
-
+    tertiaryContainer = Color.White,  // para la nav bar
+    outline = Color.Gray
 
 )
 
